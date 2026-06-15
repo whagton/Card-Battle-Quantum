@@ -76,111 +76,87 @@
         /* 4. TABULEIRO DO JOGO COMPLETO */
         .board-screen {
             display: none; width: 100vw; height: 100vh; flex-direction: column;
-            justify-content: space-between; padding: 20px; background: #04040c;
+            justify-content: space-between; padding: 15px; background: #04040c;
             position: fixed; top: 0; left: 0; z-index: 5;
         }
         .board-hud {
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.8); padding: 15px; border-radius: 10px;
+            background: rgba(0,0,0,0.8); padding: 10px; border-radius: 10px;
             border: 1px solid rgba(153, 0, 255, 0.3); width: 100%;
         }
         .credits-container { display: flex; flex-direction: column; gap: 2px; }
         .dev-tag { font-size: 0.7rem; color: #00ffcc; font-weight: bold; }
         .hud-center { text-align: center; color: #ffffff; padding: 0 10px; flex: 1; }
-        .hud-center h2 { color: #9900ff; font-size: 1.4rem; }
-        #battleStatus { font-size: 0.95rem; color: #00ffcc; font-weight: 500; }
-        .table-ring { border: 1px solid #ff0055; padding: 8px 15px; border-radius: 5px; color: #ff0055; font-weight: bold; }
+        .hud-center h2 { color: #9900ff; font-size: 1.3rem; }
+        #battleStatus { font-size: 0.85rem; color: #00ffcc; font-weight: 500; min-height: 38px; display: flex; align-items: center; justify-content: center; }
+        .table-ring { border: 1px solid #ff0055; padding: 6px 12px; border-radius: 5px; color: #ff0055; font-weight: bold; font-size: 0.9rem; }
 
-        /* ÁREA DE BATALHA */
+        /* ÁREA DE BATALHA COM MULTI-BOSS */
         .battle-area {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; margin: 10px 0;
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 10px; margin: 10px 0;
         }
+        
+        .enemies-row {
+            display: flex; gap: 15px; justify-content: center; width: 100%;
+        }
+
         .status-box {
-            background: rgba(255, 255, 255, 0.04); padding: 10px 25px; border-radius: 8px; 
-            border: 1px solid rgba(255,255,255,0.1); text-align: center; min-width: 280px;
-            position: relative;
+            background: rgba(255, 255, 255, 0.04); padding: 10px 20px; border-radius: 8px; 
+            border: 1px solid rgba(255,255,255,0.1); text-align: center; min-width: 200px;
+            position: relative; transition: all 0.2s ease;
         }
-        .hp-text { font-size: 1.5rem; font-weight: bold; color: #ff0055; margin-top: 3px; }
-        .shield-badge { 
-            font-size: 0.75rem; background: #0077ff; color: white; padding: 2px 8px; 
-            border-radius: 10px; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            display: none; box-shadow: 0 0 10px #0077ff;
-        }
-
-        /* ÁREA DAS CARTAS (MÃO) */
-        .hand-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            min-height: 190px;
-            perspective: 1000px;
-        }
-
-        /* DESIGN ESTILIZADO DAS CARTAS COŚMICAS */
-        .quantum-card {
-            width: 135px;
-            height: 185px;
-            background: linear-gradient(145deg, #070412 0%, #140d2e 100%);
-            border: 2px solid #9900ff;
-            border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 12px;
+        
+        /* Estilo para quando o boss for selecionado como alvo */
+        .status-box.enemy-target {
+            border-color: #00ffcc;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            background: rgba(0, 255, 204, 0.05);
             cursor: pointer;
+        }
+        
+        .status-box.selectable-enemy { cursor: pointer; }
+        .status-box.selectable-enemy:hover { border-color: #9900ff; background: rgba(153, 0, 255, 0.05); }
+
+        .status-box.dead-enemy {
+            opacity: 0.3; border-color: #333; background: rgba(0,0,0,0.5); pointer-events: none;
+        }
+        .status-box.dead-enemy .hp-text { color: #555 !important; }
+
+        .hp-text { font-size: 1.3rem; font-weight: bold; color: #ff0055; margin-top: 3px; }
+        .shield-badge { 
+            font-size: 0.7rem; background: #0077ff; color: white; padding: 1px 6px; 
+            border-radius: 10px; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+            display: none; box-shadow: 0 0 8px #0077ff;
+        }
+
+        /* ÁREA DAS CARTAS EXPANDIDA (MÃO COM 4 CARTAS) */
+        .hand-container {
+            display: flex; gap: 12px; justify-content: center; align-items: center; width: 100%; min-height: 165px; perspective: 1000px;
+        }
+
+        /* DESIGN DAS CARTAS COŚMICAS */
+        .quantum-card {
+            width: 125px; height: 165px;
+            background: linear-gradient(145deg, #070412 0%, #140d2e 100%);
+            border: 2px solid #9900ff; border-radius: 12px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 10px; cursor: pointer; position: relative; user-select: none;
             transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            user-select: none;
         }
 
         .quantum-card:hover {
-            transform: translateY(-20px) scale(1.06);
-            box-shadow: 0 12px 30px var(--card-glow);
-            border-color: var(--card-glow);
+            transform: translateY(-15px) scale(1.06); box-shadow: 0 12px 25px var(--card-glow); border-color: var(--card-glow);
         }
 
         .card-header {
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-align: center;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-            min-height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 0.7rem; font-weight: bold; text-align: center; color: #fff;
+            text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;
+            min-height: 28px; display: flex; align-items: center; justify-content: center;
         }
 
-        .card-value {
-            font-size: 1.6rem;
-            font-weight: 900;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-        }
-
-        .card-effect-desc {
-            font-size: 0.65rem;
-            color: #bbb;
-            text-align: center;
-            line-height: 1.2;
-            margin: 5px 0;
-            font-style: italic;
-        }
-
-        .card-footer {
-            font-size: 0.6rem;
-            text-align: center;
-            color: #fff;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 3px 0;
-            border-radius: 50px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
+        .card-value { font-size: 1.4rem; font-weight: 900; text-align: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .card-effect-desc { font-size: 0.6rem; color: #bbb; text-align: center; line-height: 1.2; margin: 3px 0; font-style: italic; }
+        .card-footer { font-size: 0.55rem; text-align: center; color: #fff; background: rgba(255, 255, 255, 0.08); padding: 2px 0; border-radius: 50px; font-weight: 700; }
 
         /* MODAL */
         .modal {
@@ -227,29 +203,42 @@
                 <span class="dev-tag">BY: WHAGTON</span>
             </div>
             <div class="hud-center">
-                <h2>ARENA QUANTUM</h2>
-                <p id="battleStatus">Sua vez! Use uma carta contra o Boss.</p>
+                <h2>ARENA QUANTUM MULTI-BOSS</h2>
+                <p id="battleStatus">Clique em um dos chefes para mirar, depois escolha sua carta!</p>
             </div>
             <div class="table-ring" id="turnIndicator">Rodada: 1</div>
         </div>
 
         <div class="battle-area">
-            <div class="status-box">
-                <h3>Inimigo: Boss Quântico</h3>
-                <div class="hp-text" id="enemyHp">HP: 1000</div>
+            
+            <!-- LINHA COM OS 3 BOSSES DO JOGO -->
+            <div class="enemies-row">
+                <div class="status-box selectable-enemy" id="bossBox_0" onclick="selecionarAlvo(0)">
+                    <h3>Boss Alfa</h3>
+                    <div class="hp-text" id="enemyHp_0">HP: 10000</div>
+                </div>
+                <div class="status-box selectable-enemy" id="bossBox_1" onclick="selecionarAlvo(1)">
+                    <h3>Boss Beta</h3>
+                    <div class="hp-text" id="enemyHp_1">HP: 10000</div>
+                </div>
+                <div class="status-box selectable-enemy" id="bossBox_2" onclick="selecionarAlvo(2)">
+                    <h3>Boss Ômega</h3>
+                    <div class="hp-text" id="enemyHp_2">HP: 10000</div>
+                </div>
             </div>
 
+            <!-- CONTAINER PARA 4 CARTAS DO JOGADOR -->
             <div class="hand-container" id="playerHand"></div>
 
             <div class="status-box">
                 <div class="shield-badge" id="shieldIndicator">ESCUDO ATIVO</div>
                 <h3>Seu Status</h3>
-                <div class="hp-text" id="playerHp" style="color: #00ffcc;">HP: 1000</div>
+                <div class="hp-text" id="playerHp" style="color: #00ffcc;">HP: 10000</div>
             </div>
         </div>
 
         <div style="text-align: center;">
-            <button class="menu-btn" style="width: auto; padding: 10px 30px;" onclick="voltarAoMenu()">Fugir da Batalha</button>
+            <button class="menu-btn" style="width: auto; padding: 5px 25px;" onclick="voltarAoMenu()">Fugir da Batalha</button>
         </div>
     </div>
 
@@ -262,23 +251,32 @@
     </div>
 
     <script>
-        // Configurações e Status da Batalha Elevada para 1000 HP
-        let enemyHp = 1000;
-        let playerHp = 1000;
+        // Sistema de 10.000 HP
+        let playerHp = 10000;
         let rodada = 1;
         let escudoJogador = false;
         let jogoAcabou = false;
+        let alvoSelecionado = 0; // Index do boss mirado (0, 1 ou 2)
 
-        // EXPANSÃO DO BARALHO: 8 cartas com mecânicas e efeitos variados
+        // Estrutura de dados para gerenciar os 3 Chefes
+        let bosses = [
+            { nome: "Boss Alfa", hp: 10000, vivo: true, id: 0 },
+            { nome: "Boss Beta", hp: 10000, vivo: true, id: 1 },
+            { nome: "Boss Ômega", hp: 10000, vivo: true, id: 2 }
+        ];
+
+        // EXPANSÃO DO DECK PRINCIPAL (Agrupado com 10 cartas totais e dano balanceado para os 10k de vida)
         const deckDeCartas = [
-            { nome: "Pulso de Fóton",  valor: 80,  efeito: "ataque",   desc: "Disparo rápido padrão",       cor: "#00ffcc", tag: "FÓTON" },
-            { nome: "Raio Gamma",     valor: 140, efeito: "ataque",   desc: "Forte feixe radioativo",     cor: "#ff0055", tag: "CÓSMICO" },
-            { nome: "Buraco Negro",   valor: 250, efeito: "critico",  desc: "50% de chance de erro ou CRÍTICO",cor: "#9900ff", tag: "SINGULARIDADE" },
-            { nome: "Plasma Estelar",  valor: 60,  efeito: "ataque",   desc: "Calor constante básico",       cor: "#ffcc00", tag: "ESTRELA" },
-            { nome: "Dreno Sombrio",  valor: 90,  efeito: "vampiro",  desc: "Causa dano e cura você",      cor: "#ff00aa", tag: "ANTIMATÉRIA" },
-            { nome: "Matriz de Éter", valor: 150, efeito: "cura",     desc: "Restaura integridade molecular", cor: "#00ff55", tag: "REGEN" },
-            { nome: "Dobra Espacial",  valor: 0,   efeito: "escudo",   desc: "Bloqueia o próximo golpe do Boss", cor: "#0077ff", tag: "DEFESA" },
-            { nome: "Supernova",      valor: 320, efeito: "ataque",   desc: "Dano extremo massivo",        cor: "#ff5500", tag: "FINAL" }
+            { nome: "Pulso de Fóton",    valor: 800,  efeito: "ataque",   desc: "Disparo rápido padrão",       cor: "#00ffcc", tag: "FÓTON" },
+            { nome: "Raio Gamma",       valor: 1500, efeito: "ataque",   desc: "Forte feixe radioativo",     cor: "#ff0055", tag: "CÓSMICO" },
+            { nome: "Buraco Negro",     valor: 2600, efeito: "critico",  desc: "50% de chance de erro ou CRÍTICO",cor: "#9900ff", tag: "SINGULARIDADE" },
+            { nome: "Plasma Estelar",    valor: 700,  efeito: "ataque",   desc: "Calor constante básico",       cor: "#ffcc00", tag: "ESTRELA" },
+            { nome: "Dreno Sombrio",    valor: 950,  efeito: "vampiro",  desc: "Causa dano e converte em cura",cor: "#ff00aa", tag: "ANTIMATÉRIA" },
+            { nome: "Matriz de Éter",   valor: 1600, efeito: "cura",     desc: "Restaura sua integridade molecular",cor: "#00ff55", tag: "REGEN" },
+            { nome: "Dobra Espacial",    valor: 0,    efeito: "escudo",   desc: "Bloqueia o próximo golpe recebido", cor: "#0077ff", tag: "DEFESA" },
+            { nome: "Aniquilação Total",valor: 850,  efeito: "area",     desc: "Ataque massivo em TODOS os bosses", cor: "#ff5500", tag: "ÁREA" },
+            { nome: "Choque Quântico",  valor: 1200, efeito: "ataque",   desc: "Sobrecarga elétrica estática", cor: "#00ffff", tag: "ELÉTRICO" },
+            { nome: "Cometa Binário",   valor: 2000, efeito: "ataque",   desc: "Impacto duplo concentrado",    cor: "#e100ff", tag: "METEORO" }
         ];
 
         let maoAtual = [];
@@ -293,22 +291,43 @@
             document.getElementById('mainMenu').style.display = 'flex';
         }
 
+        function selecionarAlvo(index) {
+            if (jogoAcabou || !bosses[index].vivo) return;
+            
+            alvoSelecionado = index;
+            for (let i = 0; i < 3; i++) {
+                let box = document.getElementById(`bossBox_${i}`);
+                if (bosses[i].vivo) {
+                    box.className = (i === index) ? "status-box selectable-enemy enemy-target" : "status-box selectable-enemy";
+                }
+            }
+        }
+
         function iniciarJogoAtivo() {
-            enemyHp = 1000;
-            playerHp = 1000;
+            playerHp = 10000;
             rodada = 1;
             escudoJogador = false;
             jogoAcabou = false;
+            alvoSelecionado = 0;
+
+            bosses.forEach(b => {
+                b.hp = 10000;
+                b.vivo = true;
+                document.getElementById(`enemyHp_${b.id}`).innerText = "HP: " + b.hp;
+                document.getElementById(`bossBox_${b.id}`).className = "status-box selectable-enemy";
+            });
             
-            document.getElementById('enemyHp').innerText = "HP: " + enemyHp;
+            // Força o alvo inicial no Boss Alfa (0)
+            selecionarAlvo(0);
+
             document.getElementById('playerHp').innerText = "HP: " + playerHp;
             document.getElementById('turnIndicator').innerText = "Rodada: " + rodada;
-            document.getElementById('battleStatus').innerText = "O Boss Quântico desafia você! Escolha sua carta.";
+            document.getElementById('battleStatus').innerText = "Clique em um boss para mirar e escolha sua ação na mão de cartas!";
             document.getElementById('shieldIndicator').style.display = "none";
             
-            // Sorteia as 3 cartas iniciais
+            // Compra 4 cartas por rodada agora!
             maoAtual = [];
-            for(let i = 0; i < 3; i++) {
+            for(let i = 0; i < 4; i++) {
                 maoAtual.push(sortearNovaCarta());
             }
 
@@ -339,7 +358,7 @@
 
                 let exibicaoValor = carta.valor > 0 ? carta.valor : "";
                 if(carta.efeito === "cura") exibicaoValor = "+" + carta.valor;
-                if(carta.efeito === "ataque" || carta.efeito === "critico" || carta.efeito === "vampiro") exibicaoValor = "-" + carta.valor;
+                if(carta.efeito === "ataque" || carta.efeito === "critico" || carta.efeito === "vampiro" || carta.efeito === "area") exibicaoValor = "-" + carta.valor;
                 if(carta.efeito === "escudo") exibicaoValor = "DEF";
 
                 elementoCarta.innerHTML = `
@@ -353,102 +372,139 @@
             });
         }
 
-        // CONTROLADOR DE TURNO: Sua Ação -> Verificação -> Ataque do Boss
         function processarTurnoCompleto(indiceCarta) {
             if(jogoAcabou) return;
 
             const cartaJogada = maoAtual[indiceCarta];
+            let alvo = bosses[alvoSelecionado];
             let msgLog = "";
 
-            // 1. PROCESSA A CARTA DO JOGADOR
+            // 1. TURNO DO JOGADOR
             if (cartaJogada.efeito === "ataque") {
-                enemyHp -= cartaJogada.valor;
-                msgLog = `Você usou ${cartaJogada.nome} e causou ${cartaJogada.valor} de dano! `;
+                alvo.hp -= cartaJogada.valor;
+                msgLog = `Você usou ${cartaJogada.nome} no ${alvo.nome} causando ${cartaJogada.valor} de dano. `;
                 aplicarFlashVisual('flash-damage');
             } 
             else if (cartaJogada.efeito === "critico") {
-                // Mecânica Crítica: 50% de chance de duplicar ou zerar
                 if (Math.random() >= 0.5) {
                     let superDano = cartaJogada.valor * 2;
-                    enemyHp -= superDano;
-                    msgLog = `💥 CRÍTICO COŚMICO! ${cartaJogada.nome} causou ${superDano} de dano! `;
+                    alvo.hp -= superDano;
+                    msgLog = `💥 CRÍTICO! ${cartaJogada.nome} obliterou o ${alvo.nome} com ${superDano} de dano! `;
                     aplicarFlashVisual('flash-damage');
                 } else {
-                    msgLog = `❌ O colapso falhou! ${cartaJogada.nome} não causou dano nesta dimensão. `;
+                    msgLog = `❌ Falha dimensional! ${cartaJogada.nome} errou o golpe. `;
                 }
             }
             else if (cartaJogada.efeito === "vampiro") {
-                enemyHp -= cartaJogada.valor;
-                playerHp += Math.floor(cartaJogada.valor * 0.6); // Cura 60% do dano dado
-                if (playerHp > 1000) playerHp = 1000;
-                msgLog = `🩸 Vampirismo! Causou ${cartaJogada.valor} de dano e converteu em vida! `;
+                alvo.hp -= cartaJogada.valor;
+                playerHp += Math.floor(cartaJogada.valor * 0.6);
+                if (playerHp > 10000) playerHp = 10000;
+                msgLog = `🩸 Dreno Quântico! Sugou ${cartaJogada.valor} de vida do ${alvo.nome}. `;
                 aplicarFlashVisual('flash-heal');
             }
             else if (cartaJogada.efeito === "cura") {
                 playerHp += cartaJogada.valor;
-                if(playerHp > 1000) playerHp = 1000;
-                msgLog = `💚 Recuperação Quântica! Você se curou em +${cartaJogada.valor} HP. `;
+                if(playerHp > 10000) playerHp = 10000;
+                msgLog = `💚 Auto-Reparo! Recuperou +${cartaJogada.valor} HP. `;
                 aplicarFlashVisual('flash-heal');
             } 
             else if (cartaJogada.efeito === "escudo") {
                 escudoJogador = true;
                 document.getElementById('shieldIndicator').style.display = "block";
-                msgLog = `🛡️ Dobra Espacial ativada! Você está protegido do próximo golpe. `;
+                msgLog = `🛡️ Escudo de Éter ativado! Absorverá o próximo dano de um Boss. `;
                 aplicarFlashVisual('flash-shield');
             }
+            else if (cartaJogada.efeito === "area") {
+                bosses.forEach(b => { if (b.vivo) b.hp -= cartaJogada.valor; });
+                msgLog = `🌌 ANIQUILAÇÃO! Todos os chefes ativos sofreram ${cartaJogada.valor} de dano. `;
+                aplicarFlashVisual('flash-damage');
+            }
 
-            // Trava HP em 0
-            if(enemyHp < 0) enemyHp = 0;
-            document.getElementById('enemyHp').innerText = "HP: " + enemyHp;
+            // Atualiza os dados de HP de todos os inimigos pós-ataque
+            atualizarVidaDosBosses();
 
-            // Verifica se o jogador ganhou antes do boss revidar
-            if (enemyHp === 0) {
-                document.getElementById('battleStatus').innerText = msgLog + "🏆 VITÓRIA! Você pulverizou o Boss Quântico!";
+            // Verifica se todos morreram antes do contra-ataque
+            let vivos = bosses.filter(b => b.vivo);
+            if (vivos.length === 0) {
+                document.getElementById('battleStatus').innerText = msgLog + "🏆 VITÓRIA ABSOLUTA! Você derrotou toda a guilda quântica!";
                 finalizarPartida();
                 return;
             }
 
-            // 2. TURNO DO BOSS (CONTRA-ATAQUE AUTOMÁTICO)
+            // Se o alvo atual morreu mas restam chefes vivos, realoca a mira automaticamente
+            if (!alvo.vivo && vivos.length > 0) {
+                selecionarAlvo(vivos[0].id);
+            }
+
+            // 2. TURNO COLETIVO E INTELIGENTE DA IA DO BOSS
             setTimeout(() => {
                 if(jogoAcabou) return;
 
-                // Sorteia um dano aleatório do Boss entre 60 e 160
-                let danoDoBoss = Math.floor(Math.random() * (160 - 60 + 1)) + 60;
+                let logAtaquesBoss = "";
                 
-                // Frases de ataque do Boss
-                const frasesBoss = ["Desparou um Laser Quântico", "Invocou uma Tempestade Estelar", "裂 Alterou a Gravidade", "Ejetou Matéria Escura"];
-                let ataqueEscolhido = frasesBoss[Math.floor(Math.random() * frasesBoss.length)];
+                // Cada Boss sobrevivente age de forma autônoma e inteligente
+                bosses.forEach(b => {
+                    if (!b.vivo) return;
 
-                if (escudoJogador) {
-                    msgLog += `| 🛡️ O Boss usou [${ataqueEscolhido}], mas seu escudo ABSORVEU o golpe!`;
-                    escudoJogador = false; // Gasta o escudo
-                    document.getElementById('shieldIndicator').style.display = "none";
-                } else {
-                    playerHp -= danoDoBoss;
-                    if (playerHp < 0) playerHp = 0;
-                    msgLog += `| 👾 O Boss usou [${ataqueEscolhido}] e te causou ${danoDoBoss} de dano!`;
-                    aplicarFlashVisual('flash-boss-damage');
-                }
+                    // IA Inteligente: Se a vida estiver abaixo de 2500, ele tem 60% de chance de priorizar cura em vez de atacar!
+                    if (b.hp < 2500 && Math.random() < 0.6) {
+                        let autoCura = 1200;
+                        b.hp += autoCura;
+                        if (b.hp > 10000) b.hp = 10000;
+                        logAtaquesBoss += `| 👾 [${b.nome}] usou Matriz de Éter e recuperou +${autoCura} HP! `;
+                    } else {
+                        // Escolhe um ataque do baralho equivalente
+                        let danoSorteado = Math.floor(Math.random() * (1200 - 400 + 1)) + 400;
+                        
+                        if (escudoJogador) {
+                            logAtaquesBoss += `| 🛡️ [${b.nome}] tentou atacar, mas seu escudo bloqueou! `;
+                            escudoJogador = false; // Gasta a barreira protetora
+                            document.getElementById('shieldIndicator').style.display = "none";
+                        } else {
+                            playerHp -= danoSorteado;
+                            logAtaquesBoss += `| 💥 [${b.nome}] atacou e causou ${danoSorteado} de dano! `;
+                            aplicarFlashVisual('flash-boss-damage');
+                        }
+                    }
+                });
 
+                if (playerHp < 0) playerHp = 0;
                 document.getElementById('playerHp').innerText = "HP: " + playerHp;
-                document.getElementById('battleStatus').innerText = msgLog;
+                atualizarVidaDosBosses();
 
-                // Verifica se o jogador perdeu
+                document.getElementById('battleStatus').innerText = msgLog + "\n" + logAtaquesBoss;
+
+                // Fim de jogo caso o jogador venha a falecer
                 if (playerHp === 0) {
-                    document.getElementById('battleStatus').innerText = "💀 FIM DE JOGO! Sua energia colapsou na arena do Whagton.";
+                    document.getElementById('battleStatus').innerText = "💀 DERROTA! Você foi superado pela Inteligência Quântica.";
                     finalizarPartida();
                     return;
                 }
 
-                // Passa a rodada
                 rodada++;
                 document.getElementById('turnIndicator').innerText = "Rodada: " + rodada;
 
-                // Substitui a carta jogada por uma nova do deck
+                // Repõe a carta usada comprando mais uma
                 maoAtual[indiceCarta] = sortearNovaCarta();
                 renderizarMaoDoJogador();
 
-            }, 700); // Pequeno atraso para dar tempo de ler o que a sua carta fez
+            }, 900);
+        }
+
+        function atualizarVidaDosBosses() {
+            bosses.forEach(b => {
+                if(b.hp < 0) b.hp = 0;
+                
+                let elementHp = document.getElementById(`enemyHp_${b.id}`);
+                let elementBox = document.getElementById(`bossBox_${b.id}`);
+                
+                elementHp.innerText = "HP: " + b.hp;
+                
+                if(b.hp === 0 && b.vivo) {
+                    b.vivo = false;
+                    elementBox.className = "status-box dead-enemy";
+                }
+            });
         }
 
         function aplicarFlashVisual(classeCSS) {
