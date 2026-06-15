@@ -18,12 +18,16 @@
 
         /* Arena */
         #game-ui { display: none; width: 100%; height: 100%; position: relative; }
-        .mewtwo-container { position: absolute; top: 10%; right: 10%; }
+        
+        /* Containers dos Pokémons e HP */
+        .hp-box { background: rgba(0,0,0,0.6); padding: 10px; border-radius: 5px; margin-bottom: 10px; border: 2px solid #555; }
+        
+        .mewtwo-container { position: absolute; top: 10%; right: 10%; text-align: center; }
         .pikachu-container { position: absolute; bottom: 20%; left: 10%; }
         .pokemon { width: 120px; height: 120px; }
 
         /* Ataques acima do Pikachu */
-        .controls { position: absolute; bottom: 25%; left: 10%; width: 250px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .controls { width: 250px; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 10px; }
         .move-btn { padding: 8px; cursor: pointer; background: #333; color: white; border: 1px solid #555; font-size: 0.8rem; }
     </style>
 </head>
@@ -39,6 +43,7 @@
 
     <div id="game-ui">
         <div class="mewtwo-container">
+            <div class="hp-box">Mewtwo: <span id="e-hp">3000</span> / 3000</div>
             <img src="https://img.pokemondb.net/sprites/black-white/anim/normal/mewtwo.gif" class="pokemon">
         </div>
         
@@ -47,6 +52,7 @@
                 <button class="move-btn" onclick="tocarSom('thunder')">TROVÃO</button>
                 <button class="move-btn" onclick="tocarSom('shock')">CHOQUE</button>
             </div>
+            <div class="hp-box">Pikachu: <span id="p-hp">3000</span> / 3000</div>
             <img id="pikachu" src="https://img.pokemondb.net/sprites/black-white/anim/back-normal/pikachu.gif" class="pokemon">
         </div>
     </div>
