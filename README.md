@@ -98,19 +98,27 @@
             opacity: 0; transition: opacity 0.6s ease;
         }
 
-        /* OVERLAY DO SUPER ATAQUE ELÉTRICO */
+        /* OVERLAY QUE FAZ A TELA PISCAR COM CORES DE RAIO (AMARELO, BRANCO, AZUL) */
         .ray-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0); z-index: 9;
-            pointer-events: none; mix-blend-mode: overlay;
-            transition: background 0.1s ease;
+            pointer-events: none;
         }
-        .ray-active { animation: lightningStrike 1.5s ease-out forwards; }
+        .ray-active { animation: lightningFlicker 2.5s steps(1) infinite; }
 
-        @keyframes lightningStrike {
-            0%, 20%, 40%, 60%, 80% { background: rgba(255, 234, 0, 0.8); }
-            10%, 30%, 50%, 70%, 90% { background: rgba(255, 255, 255, 0.9); }
-            100% { background: rgba(0, 0, 0, 0); }
+        @keyframes lightningFlicker {
+            0%, 100% { background: rgba(0, 0, 0, 0); }
+            5% { background: rgba(255, 235, 59, 0.85); }     /* Amarelo Choque */
+            10% { background: rgba(255, 255, 255, 0.95); }    /* Branco Puro */
+            15% { background: rgba(0, 229, 255, 0.7); }       /* Azul Elétrico */
+            20% { background: rgba(0, 0, 0, 0); }
+            30% { background: rgba(255, 235, 59, 0.9); }
+            35% { background: rgba(255, 255, 255, 0.9); }
+            40% { background: rgba(0, 0, 0, 0); }
+            55% { background: rgba(255, 235, 59, 0.8); }
+            60% { background: rgba(0, 229, 255, 0.6); }
+            65% { background: rgba(255, 255, 255, 0.95); }
+            70% { background: rgba(0, 0, 0, 0); }
         }
 
         /* CORES DE FLASH NO FUNDO */
@@ -118,13 +126,13 @@
         .flash-white { background: #333333 !important; }
         .flash-shadow { background: #3a005c !important; }
 
-        /* TREMORES DE TELA DA ARENA */
+        /* TREMORES VIOLENTOS DA TELA INTEIRA */
         @keyframes superShake {
             0%, 100% { transform: translate(0, 0); }
-            10%, 30%, 50%, 70%, 90% { transform: translate(-15px, 12px) scale(1.02); }
-            20%, 40%, 60%, 80% { transform: translate(15px, -12px) scale(0.98); }
+            10%, 30%, 50%, 70%, 90% { transform: translate(-12px, 10px); }
+            20%, 40%, 60%, 80% { transform: translate(12px, -10px); }
         }
-        .shake-super-effect { animation: superShake 1.5s ease-in-out both; }
+        .shake-super-effect { animation: superShake 0.15s infinite; }
         
         @keyframes shake {
             0%, 100% { transform: translate(0, 0); }
@@ -170,15 +178,7 @@
         /* MOVIMENTOS FISICOS DE ATAQUE */
         .attack-dash-left { transform: translate(-50px, 30px) scale(1.1); }
         .attack-dash-right { transform: translate(50px, -30px) scale(1.1); }
-        
-        @keyframes launchSuper {
-            0% { transform: scale(1) translate(0, 0); filter: brightness(1); }
-            20% { transform: scale(1.8) translate(-10px, 5px); filter: brightness(2.5) drop-shadow(0 0 20px #fff); }
-            40% { transform: scale(2.2) translate(150px, -100px); filter: brightness(4) drop-shadow(0 0 40px #ffea00); }
-            80% { transform: scale(2.2) translate(150px, -100px); filter: brightness(4); }
-            100% { transform: scale(1) translate(0, 0); filter: brightness(1); }
-        }
-        .super-jump-anim { animation: launchSuper 1.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .super-dash-forward { transform: translate(60px, -40px) scale(1.2); filter: brightness(2); }
         
         .damage-blink { filter: brightness(5) sepia(1) hue-rotate(-50deg) !important; }
         .shield-effect { border-color: #f1c40f !important; box-shadow: 0 0 15px #f1c40f !important; }
@@ -229,8 +229,8 @@
 </head>
 <body>
 
-    <!-- LINK DIRETO DO GITHUB (NÃO POSSUI BLOQUEIO DE CORS) -->
-    <audio id="pikachuVoice" src="https://raw.githubusercontent.com/SuperMarcus/Pokemon-Cries/master/cries/25.mp3" preload="auto" crossOrigin="anonymous"></audio>
+    <!-- LINK DIRETO DO SERVIDOR DO MYINSTANTS (SEM BLOQUEIOS) -->
+    <audio id="pikachuVoice" src="https://www.myinstants.com/media/sounds/pikachu-thunderbolt.mp3" preload="auto" crossOrigin="anonymous"></audio>
 
     <div class="splash-screen" id="splashScreen">
         <div class="splash-container" id="splashContainer">
@@ -245,6 +245,7 @@
     </div>
 
     <div class="battle-container" id="gameContainer">
+        <!-- Overlay responsável pelos flashes coloridos de raio na tela -->
         <div class="ray-overlay" id="lightningRay"></div>
 
         <div class="screen-area" id="arenaArea">
@@ -283,12 +284,11 @@
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
-            // Toca e pausa imediatamente no clique inicial para "desbloquear" o som no navegador
             if (somPikachuReal) {
                 somPikachuReal.play().then(() => {
                     somPikachuReal.pause();
                     somPikachuReal.currentTime = 0;
-                }).catch(e => console.log("Permissão de áudio concedida."));
+                }).catch(e => console.log("Áudio liberado."));
             }
         }
 
@@ -298,18 +298,6 @@
                 somPikachuReal.volume = 1.0;
                 somPikachuReal.play().catch(err => console.log("Erro ao reproduzir áudio:", err));
             }
-
-            // Som de trovão sintético extra ao fundo do grito original
-            initAudio();
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(110, audioCtx.currentTime);
-            osc.frequency.linearRampToValueAtTime(30, audioCtx.currentTime + 1.4);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.4);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 1.4);
         }
 
         function somAtaquePikachu() {
@@ -383,7 +371,7 @@
         let ataquesNoPainel = [];
 
         const todosAtaquesPikachu = [
-            { nome: "SUPER ATAQUE", dano: 550, precisao: 1.0, super: true, desc: "PIKACHU GRITA E ATACA!", cor: "#ff3c00" },
+            { nome: "SUPER ATAQUE", dano: 600, precisao: 1.0, super: true, desc: "PIKACHU THUNDERBOLT!", cor: "#ff3c00" },
             { nome: "Thunderbolt", dano: 140, precisao: 1.0, desc: "Ataque Forte | Elétrico", cor: "#f1c40f" },
             { nome: "Quick Attack", dano: 60, precisao: 1.0, desc: "Ataque Fraco (Não erra)", cor: "#a8a878" },
             { nome: "Iron Tail", dano: 170, precisao: 0.75, desc: "Muito Forte (75% Chance)", cor: "#b8b8d0" },
@@ -404,7 +392,7 @@
 
         function iniciarJogo(event) {
             event.stopPropagation();
-            initAudio(); // Libera as permissões de áudio do navegador aqui
+            initAudio(); 
             const splash = document.getElementById('splashContainer');
             splash.style.opacity = '0';
             splash.style.transform = 'scale(1.2)';
@@ -452,20 +440,24 @@
             let logMsg = "";
 
             if (golpe.super) {
-                // Ativa a voz real do Pikachu + Trovão
+                // Toca a voz oficial do MyInstants
                 gritoPikachuSuper();
-                document.getElementById('logBox').innerText = "PIKACHUUUUUUUU!!!";
+                document.getElementById('logBox').innerText = "PIKACHUUUUUUUU... THUNDERBOLT!!!";
 
-                // Executa a animação visual na tela
-                pikachuImg.classList.add('super-jump-anim');
+                // Avanço normal de ataque do Pikachu
+                pikachuImg.classList.add('super-dash-forward');
+                
+                // Ativa a animação de piscar em várias cores (amarelo, branco, azul)
                 rayOverlay.classList.add('ray-active');
 
+                // Ativa tremor contínuo na tela e no fundo
                 document.body.classList.add('shake-super-effect');
                 gameContainer.classList.add('shake-super-effect');
                 mewtwoImg.classList.add('damage-blink');
 
+                // Duração baseada no tempo do áudio clássico
                 setTimeout(() => {
-                    pikachuImg.classList.remove('super-jump-anim');
+                    pikachuImg.classList.remove('super-dash-forward');
                     rayOverlay.classList.remove('ray-active');
                     document.body.classList.remove('shake-super-effect');
                     gameContainer.classList.remove('shake-super-effect');
@@ -473,14 +465,14 @@
 
                     let danoFinal = golpe.dano;
                     enemy.hp = Math.max(0, enemy.hp - danoFinal);
-                    logMsg = `💥 CRITICAL HIT! O Super Ataque acertou em cheio! Mewtwo perdeu -${danoFinal} HP!`;
+                    logMsg = `⚡ CRITICAL HIT! O ThunderBolt destruiu tudo! Mewtwo perdeu -${danoFinal} HP!`;
                     
                     somDanoMewtwo();
                     atualizarBarras();
                     document.getElementById('logBox').innerText = logMsg;
                     verificarFluxoJogo();
 
-                }, 1600);
+                }, 2400); 
 
             } else {
                 // ATAQUES COMUNS
