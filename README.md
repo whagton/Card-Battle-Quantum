@@ -17,6 +17,7 @@
             justify-content: center;
             overflow: hidden;
             position: relative;
+            transition: background 0.15s ease;
         }
 
         /* TELA INICIAL DA POKÉBOLA (SPLASH) */
@@ -33,16 +34,15 @@
         }
 
         .splash-title {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #00ffcc;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             margin-bottom: 40px;
             text-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
             text-align: center;
             font-weight: 800;
         }
 
-        /* Container Interativo da Pokébola */
         .pokeball-wrapper {
             position: relative;
             width: 200px;
@@ -53,7 +53,6 @@
             justify-content: center;
         }
 
-        /* Metades da Pokébola */
         .pokeball-part {
             position: absolute;
             width: 100%;
@@ -79,7 +78,6 @@
             transform-origin: top;
         }
 
-        /* Botão Central da Pokébola */
         .pokeball-center-btn {
             position: absolute;
             width: 50px;
@@ -89,27 +87,14 @@
             border-radius: 50%;
             z-index: 10;
             transition: all 0.4s ease;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
 
-        /* Efeito de Hover/Abertura (PC e Celular Ativo) */
         .pokeball-wrapper:hover .pokeball-top, 
-        .pokeball-wrapper.open .pokeball-top {
-            transform: translateY(-45px);
-        }
-
+        .pokeball-wrapper.open .pokeball-top { transform: translateY(-45px); }
         .pokeball-wrapper:hover .pokeball-bottom, 
-        .pokeball-wrapper.open .pokeball-bottom {
-            transform: translateY(45px);
-        }
+        .pokeball-wrapper.open .pokeball-bottom { transform: translateY(45px); }
+        .pokeball-wrapper:hover .pokeball-center-btn, .pokeball-wrapper.open .pokeball-center-btn { transform: scale(0.6); opacity: 0; }
 
-        .pokeball-wrapper:hover .pokeball-center-btn,
-        .pokeball-wrapper.open .pokeball-center-btn {
-            transform: scale(0.6);
-            opacity: 0;
-        }
-
-        /* Botão Oculto que aparece quando abre */
         .start-btn {
             position: absolute;
             padding: 12px 24px;
@@ -130,36 +115,39 @@
             white-space: nowrap;
         }
 
-        /* Mostra o botão interno de início */
-        .pokeball-wrapper:hover .start-btn,
-        .pokeball-wrapper.open .start-btn {
-            opacity: 1;
-            transform: scale(1.05);
-            pointer-events: auto;
-        }
-
-        .start-btn:hover {
-            box-shadow: 0 0 30px #00bfff;
-            transform: scale(1.1) !important;
-        }
+        .pokeball-wrapper:hover .start-btn, .pokeball-wrapper.open .start-btn { opacity: 1; transform: scale(1.05); pointer-events: auto; }
 
         /* CONTAINER PRINCIPAL DO JOGO */
         .battle-container {
             width: 100%;
             max-width: 700px;
-            height: 500px;
-            background: linear-gradient(180deg, #1a1a3a 0%, #0b0b16 100%);
+            height: 520px;
+            background: linear-gradient(180deg, #14142f 0%, #07070e 100%);
             border: 4px solid #333366;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             display: flex;
             flex-direction: column;
             position: relative;
-            opacity: 0; /* Começa invisível e surge ao iniciar */
+            opacity: 0;
             transition: opacity 0.6s ease;
         }
 
-        /* 1. TELA DE EXIBIÇÃO DOS POKÉMONS */
+        /* EFEITOS ESPECIAIS DE FLASH NA ARENA */
+        .flash-shadow { background: #3a005c !important; }
+        .flash-dark { background: #1f1401 !important; }
+        .flash-hypnosis { background: #004d26 !important; }
+        .flash-damage { background: #520000 !important; }
+
+        /* ANIMAÇÃO DE TREMER A TELA */
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            10%, 30%, 50%, 70%, 90% { transform: translate(-8px, 4px); }
+            20%, 40%, 60%, 80% { transform: translate(8px, -4px); }
+        }
+        .shake-effect { animation: shake 0.35s ease-in-out; }
+
+        /* 1. TELA DE EXIBIÇÃO (ARENA) */
         .screen-area {
             flex: 1;
             display: flex;
@@ -167,18 +155,21 @@
             justify-content: space-between;
             padding: 20px;
             position: relative;
+            background: radial-gradient(circle at bottom, rgba(50,50,100,0.15) 0%, transparent 70%);
         }
 
         .status-hud {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             border: 2px solid #444488;
             border-radius: 10px;
             padding: 10px;
             width: 240px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 5;
+            transition: all 0.3s;
         }
-        .status-hud.enemy { align-self: flex-end; }
-        .status-hud.player { align-self: flex-start; }
+        .status-hud.enemy { align-self: flex-start; margin-left: 20px; }
+        .status-hud.player { align-self: flex-end; margin-right: 20px; }
         
         .poke-info { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
         .level { color: #ffcc00; }
@@ -187,26 +178,50 @@
         .hp-bar-fill { width: 100%; height: 100%; background: #00ff66; transition: width 0.4s ease; }
         .hp-text { font-size: 0.75rem; text-align: right; margin-top: 3px; color: #aaa; }
 
-        .sprite-placeholder {
-            font-size: 4rem;
+        /* SPRITES DOS POKÉMONS (GIFS HISTÓRICOS) */
+        .pokemon-sprite {
             position: absolute;
-            animation: float 3s ease-in-out infinite;
+            height: 130px;
+            object-fit: contain;
+            transition: transform 0.2s ease, filter 0.2s ease;
         }
-        .enemy-sprite { top: 30px; left: 80px; }
-        .player-sprite { bottom: 130px; right: 80px; animation-delay: 1.5s; }
+        
+        /* Posição Mewtwo (Inimigo - de frente) */
+        .enemy-sprite {
+            top: 15px;
+            right: 80px;
+            animation: floatEnemy 3.5s ease-in-out infinite;
+        }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        /* Posição Gengar (Jogador - de costas/perfil) */
+        .player-sprite {
+            bottom: 120px;
+            left: 80px;
+            animation: floatPlayer 3s ease-in-out infinite;
         }
+
+        /* Animações de Movimento Natural */
+        @keyframes floatEnemy {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.02); }
+        }
+        @keyframes floatPlayer {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.03); }
+        }
+
+        /* Efeitos de Ataque Individuais nos Sprites */
+        .attack-dash-left { transform: translate(-50px, 30px) scale(1.1); }
+        .attack-dash-right { transform: translate(50px, -30px) scale(1.1); }
+        .damage-blink { filter: matrix(1, 0, 0, 1, 0, 0) brightness(5) sepia(1) hue-rotate(-50deg); }
 
         .shield-effect { border-color: #00bfff !important; box-shadow: 0 0 15px #00bfff !important; }
 
         /* 2. LOG DE TEXTO */
         .battle-log {
-            height: 70px;
-            background: #111;
-            border-top: 3px solid #333366;
+            height: 75px;
+            background: #0f0f1d;
+            border-top: 3px solid #2d2d54;
             padding: 12px 20px;
             font-size: 0.95rem;
             color: #00ffcc;
@@ -218,17 +233,17 @@
         /* 3. PAINEL DE COMANDOS */
         .control-panel {
             height: 120px;
-            background: #222;
+            background: #181826;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             padding: 12px;
-            border-top: 2px solid #444;
+            border-top: 2px solid #2d2d54;
         }
 
         .move-btn {
-            background: #2d2d54;
-            border: 2px solid #444488;
+            background: #252547;
+            border: 2px solid #3b3b73;
             color: white;
             border-radius: 8px;
             font-size: 1rem;
@@ -240,15 +255,15 @@
             justify-content: center;
             align-items: center;
         }
-        .move-btn:hover:not(:disabled) { background: #3b3b73; border-color: #00ffcc; transform: scale(1.02); }
-        .move-btn:disabled { background: #1a1a26; color: #555; border-color: #333; cursor: not-allowed; }
+        .move-btn:hover:not(:disabled) { background: #353566; border-color: #00ffcc; transform: scale(1.02); }
+        .move-btn:disabled { background: #12121f; color: #444; border-color: #222; cursor: not-allowed; }
         .move-btn span { font-size: 0.7rem; color: #aaa; font-weight: normal; margin-top: 2px; }
 
-        .type-ghost { border-left: 6px solid #663399; }
-        .type-dark { border-left: 6px solid #4a3c31; }
-        .type-status { border-left: 6px solid #5d6d7e; }
+        .type-ghost { border-left: 6px solid #8a41ff; }
+        .type-dark { border-left: 6px solid #f0932b; }
+        .type-status { border-left: 6px solid #2ecc71; }
 
-        /* CRÉDITOS DO DESENVOLVEDOR NO CANTO DA TELA */
+        /* CRÉDITOS DO DESENVOLVEDOR */
         .dev-signature {
             position: fixed;
             bottom: 12px;
@@ -270,7 +285,6 @@
         <div class="splash-container" id="splashContainer">
             <h1 class="splash-title">POKÉMON ARENA</h1>
             
-            <!-- A Pokébola que abre com touch ou hover -->
             <div class="pokeball-wrapper" id="pokeball" onclick="togglePokeballMobile()">
                 <div class="pokeball-part pokeball-top"></div>
                 <div class="pokeball-center-btn"></div>
@@ -280,10 +294,10 @@
         </div>
     </div>
 
-    <!-- TABULEIRO DO JOGO (COMEÇA OCULTO) -->
+    <!-- TABULEIRO DO JOGO -->
     <div class="battle-container" id="gameContainer">
         
-        <div class="screen-area">
+        <div class="screen-area" id="arenaArea">
             <!-- HUD Inimigo -->
             <div class="status-hud enemy" id="enemyHud">
                 <div class="poke-info">
@@ -296,9 +310,9 @@
                 <div class="hp-text" id="enemyHpText">1000 / 1000</div>
             </div>
 
-            <!-- Emojis simulando os pokemons -->
-            <div class="sprite-placeholder enemy-sprite">🔮</div>
-            <div class="sprite-placeholder player-sprite">😈</div>
+            <!-- SPRITES REAIS ANIMADOS (GIFS DA CONSOLE POKÉMON) -->
+            <img src="https://img.pokemondb.net/sprites/black-white/anim/normal/mewtwo.gif" class="pokemon-sprite enemy-sprite" id="mewtwoSprite" alt="Mewtwo">
+            <img src="https://img.pokemondb.net/sprites/black-white/anim/back-normal/gengar.gif" class="pokemon-sprite player-sprite" id="gengarSprite" alt="Gengar">
 
             <!-- HUD Jogador -->
             <div class="status-hud player" id="playerHud">
@@ -315,31 +329,31 @@
 
         <!-- Histórico Narrativo -->
         <div class="battle-log" id="logBox">
-            O Mewtwo selvagem quer batalhar! O que o Gengar vai fazer?
+            Um Mewtwo lendário bloqueia seu caminho! O que o Gengar vai fazer?
         </div>
 
         <!-- Painel de Ataques -->
         <div class="control-panel" id="actionPanel">
             <button class="move-btn type-ghost" onclick="jogarTurno('shadow_ball')">
                 Shadow Ball
-                <span>Dano: 150 | PP: ∞</span>
+                <span>Dano: 150 | Efeito Roxo</span>
             </button>
             <button class="move-btn type-dark" onclick="jogarTurno('dark_pulse')">
                 Dark Pulse
-                <span>Crítico (35%) | PP: ∞</span>
+                <span>Crítico (35%) | Pulso Escuro</span>
             </button>
             <button class="move-btn type-status" onclick="jogarTurno('hypnosis')">
                 Hypnosis (Dreno)
-                <span>Dano: 80 + Cura | PP: ∞</span>
+                <span>Dano: 80 + Regerar | Flash Verde</span>
             </button>
             <button class="move-btn type-status" onclick="jogarTurno('substitute')">
                 Substitute (Escudo)
-                <span>Bloqueia 1 Golpe | PP: ∞</span>
+                <span>Cria Barreira Ciano</span>
             </button>
         </div>
     </div>
 
-    <!-- Assinatura no canto inferior direito da tela -->
+    <!-- Assinatura -->
     <div class="dev-signature">BY: DEV WHAGTON</div>
 
     <script>
@@ -347,119 +361,151 @@
         let enemy = { nome: "Mewtwo", hp: 1000, maxHp: 1000, escudo: false };
         let batalhaAtiva = true;
 
-        // Função suporte para cliques em celulares/telas touch
+        const gengarImg = document.getElementById('gengarSprite');
+        const mewtwoImg = document.getElementById('mewtwoSprite');
+        const gameContainer = document.getElementById('gameContainer');
+
         function togglePokeballMobile() {
-            const pokeball = document.getElementById('pokeball');
-            // Dá um "toggle" na classe open caso o usuário clique com o dedo
-            pokeball.classList.toggle('open');
+            document.getElementById('pokeball').classList.toggle('open');
         }
 
-        // Transição da Tela Inicial para a Arena de Luta
         function iniciarJogo(event) {
-            // Impede que o clique dispare o toggle do mobile de novo por engano
             event.stopPropagation(); 
-            
             const splash = document.getElementById('splashContainer');
-            const game = document.getElementById('gameContainer');
-
             splash.style.opacity = '0';
             splash.style.transform = 'scale(1.2)';
             
             setTimeout(() => {
                 document.getElementById('splashScreen').style.display = 'none';
-                game.style.opacity = '1';
+                gameContainer.style.opacity = '1';
             }, 500);
+        }
+
+        function dispararFlashVisual(classeFlash) {
+            document.body.classList.add(classeFlash);
+            setTimeout(() => document.body.classList.remove(classeFlash), 200);
+        }
+
+        function aplicarDanoFisico(alvoSprite) {
+            gameContainer.classList.add('shake-effect');
+            alvoSprite.classList.add('damage-blink');
+            dispararFlashVisual('flash-damage');
+            
+            setTimeout(() => {
+                gameContainer.classList.remove('shake-effect');
+                alvoSprite.classList.remove('damage-blink');
+            }, 350);
         }
 
         function jogarTurno(ataqueEscolhido) {
             if (!batalhaAtiva) return;
-
             travarBotoes(true);
 
-            // Turno Jogador
             let danoJogador = 0;
             let logMsg = "";
 
+            // Animação de investida do Gengar
+            gengarImg.classList.add('attack-dash-right');
+            setTimeout(() => gengarImg.classList.remove('attack-dash-right'), 250);
+
+            // PROCESSAMENTO DOS GOLPES DO JOGADOR
             if (ataqueEscolhido === 'shadow_ball') {
                 danoJogador = 150;
-                logMsg = `Gengar usou Shadow Ball! Causou ${danoJogador} de dano.`;
+                logMsg = `Gengar usou Shadow Ball!`;
+                setTimeout(() => dispararFlashVisual('flash-shadow'), 150);
             } 
             else if (ataqueEscolhido === 'dark_pulse') {
                 if (Math.random() < 0.35) {
                     danoJogador = 260;
-                    logMsg = `💥 Golpe Crítico! Gengar usou Dark Pulse e causou extraordinários ${danoJogador} de dano!`;
+                    logMsg = `💥 Golpe Crítico! Gengar usou Dark Pulse devastador!`;
                 } else {
                     danoJogador = 120;
-                    logMsg = `Gengar usou Dark Pulse! Causou ${danoJogador} de dano.`;
+                    logMsg = `Gengar usou Dark Pulse contínuo!`;
                 }
+                setTimeout(() => dispararFlashVisual('flash-dark'), 150);
             } 
             else if (ataqueEscolhido === 'hypnosis') {
                 danoJogador = 80;
                 let cura = 120;
                 player.hp = Math.min(player.maxHp, player.hp + cura);
-                logMsg = `👁️ Gengar usou Hypnosis! Causou ${danoJogador} de dano e drenou ${cura} de HP!`;
+                logMsg = `👁️ Gengar usou Hypnosis! Sugou energia vital e regenerou +${cura} de HP!`;
+                setTimeout(() => dispararFlashVisual('flash-hypnosis'), 150);
             } 
             else if (ataqueEscolhido === 'substitute') {
                 player.escudo = true;
                 document.getElementById('playerHud').classList.add('shield-effect');
-                logMsg = `🛡️ Gengar criou um Substitute! Ele está protegido contra o próximo golpe direto.`;
+                logMsg = `🛡️ Gengar moldou energia e ativou um Substitute protetor!`;
             }
 
-            if (danoJogador > 0) {
-                enemy.hp = Math.max(0, enemy.hp - danoJogador);
-            }
+            // Aplica efeitos no Mewtwo se houver dano
+            setTimeout(() => {
+                if (danoJogador > 0) {
+                    enemy.hp = Math.max(0, enemy.hp - danoJogador);
+                    aplicarDanoFisico(mewtwoImg);
+                }
+                atualizarBarras();
+                document.getElementById('logBox').innerText = logMsg;
+            }, 200);
 
-            atualizarBarras();
-            document.getElementById('logBox').innerText = logMsg;
-
+            // Verifica Vitória
             if (enemy.hp === 0) {
                 setTimeout(() => {
-                    document.getElementById('logBox').innerText = `🏆 Mewtwo desmaiou! Gengar venceu a batalha Pokémon!`;
+                    document.getElementById('logBox').innerText = `🏆 Incrível! O poderoso Mewtwo desmaiou. Gengar venceu!`;
                     batalhaAtiva = false;
                 }, 1500);
                 return;
             }
 
-            // Turno Inimigo
+            // TURNO DO MEWTWO (IA COMBATENTE)
             setTimeout(() => {
                 if (!batalhaAtiva) return;
 
                 const golpesMewtwo = [
-                    { nome: "Psystrike", dano: 160 },
-                    { nome: "Aura Sphere", dano: 130 },
-                    { nome: "Psychic", dano: 140 }
+                    { nome: "Psystrike", dano: 160, flash: "flash-shadow" },
+                    { nome: "Aura Sphere", dano: 130, flash: "flash-hypnosis" },
+                    { nome: "Psychic", dano: 145, flash: "flash-dark" }
                 ];
 
                 let golpeSorteado = golpesMewtwo[Math.floor(Math.random() * golpesMewtwo.length)];
                 let msgMewtwo = "";
 
-                if (player.escudo) {
-                    msgMewtwo = `Mewtwo tentou usar ${golpeSorteado.nome}, mas o Substitute do Gengar absorveu o impacto completamente!`;
-                    player.escudo = false;
-                    document.getElementById('playerHud').classList.remove('shield-effect');
-                } else {
-                    player.hp = Math.max(0, player.hp - golpeSorteado.dano);
-                    msgMewtwo = `Mewtwo revidou com ${golpeSorteado.nome}! Causou ${golpeSorteado.dano} de dano em Gengar.`;
-                }
+                // Animação de investida do Mewtwo para frente
+                mewtwoImg.classList.add('attack-dash-left');
+                setTimeout(() => mewtwoImg.classList.remove('attack-dash-left'), 250);
 
-                atualizarBarras();
-                document.getElementById('logBox').innerText = msgMewtwo;
+                setTimeout(() => {
+                    dispararFlashVisual(golpeSorteado.flash);
+                    
+                    if (player.escudo) {
+                        msgMewtwo = `Mewtwo utilizou ${golpeSorteado.nome}, mas a barreira do Substitute absorveu o impacto!`;
+                        player.escudo = false;
+                        document.getElementById('playerHud').classList.remove('shield-effect');
+                    } else {
+                        player.hp = Math.max(0, player.hp - golpeSorteado.dano);
+                        msgMewtwo = `Mewtwo lançou um contra-ataque de ${golpeSorteado.nome} causando -${golpeSorteado.dano} HP!`;
+                        aplicarDanoFisico(gengarImg);
+                    }
 
-                if (player.hp === 0) {
-                    setTimeout(() => {
-                        document.getElementById('logBox').innerText = `💀 Gengar desmaiou... Você perdeu a batalha.`;
-                        batalhaAtiva = false;
-                    }, 1500);
-                } else {
-                    setTimeout(() => {
-                        if(batalhaAtiva) {
-                            document.getElementById('logBox').innerText = "O que o Gengar vai fazer?";
-                            travarBotoes(false);
-                        }
-                    }, 1500);
-                }
+                    atualizarBarras();
+                    document.getElementById('logBox').innerText = msgMewtwo;
 
-            }, 1800);
+                    // Verifica Derrota
+                    if (player.hp === 0) {
+                        setTimeout(() => {
+                            document.getElementById('logBox').innerText = `💀 Gengar esgotou suas energias e desmaiou... Fim de jogo.`;
+                            batalhaAtiva = false;
+                        }, 1200);
+                    } else {
+                        setTimeout(() => {
+                            if(batalhaAtiva) {
+                                document.getElementById('logBox').innerText = "O que o Gengar vai fazer?";
+                                travarBotoes(false);
+                            }
+                        }, 1200);
+                    }
+                }, 200);
+
+            }, 2000);
         }
 
         function atualizarBarras() {
