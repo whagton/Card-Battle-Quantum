@@ -59,49 +59,60 @@
         </div>
     </div>
 
-    <audio id="sfx-thunder" src="https://www.myinstants.com/media/sounds/thunder-sound-effect.mp3"></audio>
-    <audio id="sfx-shock" src="https://www.myinstants.com/media/sounds/electric-shock.mp3"></audio>
+    <audio id="sfx-thunder" src="https://www.myinstants.com/media/sounds/thunder-sound-effect.mp3" preload="auto"></audio>
+    <audio id="sfx-shock" src="https://www.myinstants.com/media/sounds/electric-shock.mp3" preload="auto"></audio>
 
     <script>
         let pHP = 3000, eHP = 3000;
+        
         function iniciarJogo() {
+            // Toca um som vazio para "acordar" o sistema de áudio do navegador no primeiro clique
+            document.getElementById('sfx-shock').play().catch(()=>{});
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-ui').style.display = 'block';
         }
 
-        function executarSuperEfeitos() {
-            const flash = document.getElementById('flash');
-            const arena = document.getElementById('arena');
-            let count = 0;
-            const intervalo = setInterval(() => {
-                flash.classList.add('animar-flash');
-                arena.classList.add('tremer-tela-intenso'); // Nome da classe atualizada
-                setTimeout(() => {
-                    flash.classList.remove('animar-flash');
-                    arena.classList.remove('tremer-tela-intenso');
-                }, 150);
-                count++;
-                if (count >= 4) clearInterval(intervalo);
-            }, 250);
-        }
-
         function atacar(dano, isSuper) {
             const pikachu = document.getElementById('pikachu');
+            const flash = document.getElementById('flash');
+            const arena = document.getElementById('arena');
+
             if (isSuper) {
-                pikachu.classList.add('super-atk-anim');
-                executarSuperEfeitos();
+                // SOM INSTANTÂNEO
                 const s = document.getElementById('sfx-thunder');
-                s.volume = 1.0; s.play();
+                s.currentTime = 0;
+                s.volume = 1.0; 
+                s.play();
+
+                pikachu.classList.add('super-atk-anim');
+                
+                // Efeitos visuais
+                let count = 0;
+                const intervalo = setInterval(() => {
+                    flash.classList.add('animar-flash');
+                    arena.classList.add('tremer-tela-intenso');
+                    setTimeout(() => {
+                        flash.classList.remove('animar-flash');
+                        arena.classList.remove('tremer-tela-intenso');
+                    }, 150);
+                    count++;
+                    if (count >= 4) clearInterval(intervalo);
+                }, 250);
+
                 setTimeout(() => pikachu.classList.remove('super-atk-anim'), 600);
             } else {
+                // SOM INSTANTÂNEO
+                const s = document.getElementById('sfx-shock');
+                s.currentTime = 0;
+                s.volume = 1.0;
+                s.play();
+
                 pikachu.classList.add('atk-anim');
-                const flash = document.getElementById('flash');
                 flash.classList.add('animar-flash');
                 setTimeout(() => flash.classList.remove('animar-flash'), 150);
-                const s = document.getElementById('sfx-shock');
-                s.volume = 1.0; s.play();
                 setTimeout(() => pikachu.classList.remove('atk-anim'), 300);
             }
+
             eHP = Math.max(0, eHP - dano);
             document.getElementById('e-hp').innerText = eHP;
             if (eHP <= 0) alert("Você venceu o Mewtwo!");
