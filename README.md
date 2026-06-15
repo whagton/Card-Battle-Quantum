@@ -117,7 +117,6 @@
         .flash-yellow { background: #5a4b00 !important; }
         .flash-white { background: #333333 !important; }
         .flash-shadow { background: #3a005c !important; }
-        .flash-damage { background: #520000 !important; }
 
         /* TREMORES DE TELA DA ARENA */
         @keyframes superShake {
@@ -230,8 +229,8 @@
 </head>
 <body>
 
-    <audio id="pikachuAudio" src="https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg" preload="auto"></audio>
-    <audio id="pikachuVoice" src="https://play.pokemonshowdown.com/audio/cries/pikachu.wav" preload="auto"></audio>
+    <!-- LINK DIRETO DO GITHUB (NÃO POSSUI BLOQUEIO DE CORS) -->
+    <audio id="pikachuVoice" src="https://raw.githubusercontent.com/SuperMarcus/Pokemon-Cries/master/cries/25.mp3" preload="auto" crossOrigin="anonymous"></audio>
 
     <div class="splash-screen" id="splashScreen">
         <div class="splash-container" id="splashContainer">
@@ -270,7 +269,8 @@
         </div>
 
         <div class="control-panel" id="actionPanel">
-            </div>
+            <!-- Gerado dinamicamente -->
+        </div>
     </div>
 
     <div class="dev-signature">BY: DEV WHAGTON</div>
@@ -283,12 +283,12 @@
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
-            // Força o carregamento do arquivo de voz original pelas políticas do navegador
+            // Toca e pausa imediatamente no clique inicial para "desbloquear" o som no navegador
             if (somPikachuReal) {
                 somPikachuReal.play().then(() => {
                     somPikachuReal.pause();
                     somPikachuReal.currentTime = 0;
-                }).catch(e => console.log("Aguardando clique do usuário para ativar áudios."));
+                }).catch(e => console.log("Permissão de áudio concedida."));
             }
         }
 
@@ -296,17 +296,17 @@
             if (somPikachuReal) {
                 somPikachuReal.currentTime = 0;
                 somPikachuReal.volume = 1.0;
-                somPikachuReal.play().catch(err => console.log("Erro ao reproduzir arquivo de áudio:", err));
+                somPikachuReal.play().catch(err => console.log("Erro ao reproduzir áudio:", err));
             }
 
-            // Reforço sintético para dar efeito de trovão extremo ao fundo do grito
+            // Som de trovão sintético extra ao fundo do grito original
             initAudio();
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(110, audioCtx.currentTime);
             osc.frequency.linearRampToValueAtTime(30, audioCtx.currentTime + 1.4);
-            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.4);
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.start(); osc.stop(audioCtx.currentTime + 1.4);
@@ -317,9 +317,9 @@
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(350, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.start(); osc.stop(audioCtx.currentTime + 0.15);
@@ -330,9 +330,9 @@
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-            osc.frequency.linearRampToValueAtTime(600, audioCtx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(550, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.start(); osc.stop(audioCtx.currentTime + 0.3);
@@ -343,9 +343,9 @@
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(120, audioCtx.currentTime);
-            osc.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(110, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(45, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.start(); osc.stop(audioCtx.currentTime + 0.2);
@@ -356,9 +356,8 @@
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'square';
-            osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-            osc.frequency.setValueAtTime(180, audioCtx.currentTime + 0.08);
-            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.18);
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.start(); osc.stop(audioCtx.currentTime + 0.18);
@@ -369,9 +368,9 @@
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.2);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(700, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(350, audioCtx.currentTime + 0.2);
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
             osc.connect(gain); gain.connect(audioCtx.destination);
             osc.start(); osc.stop(audioCtx.currentTime + 0.2);
@@ -384,14 +383,14 @@
         let ataquesNoPainel = [];
 
         const todosAtaquesPikachu = [
-            { nome: "SUPER ATAQUE", dano: 550, precisao: 1.0, super: true, desc: "PIKACHUUUUUUUUUUUUUUUUUUUUUUUUUUUUU", cor: "#ff7700" },
+            { nome: "SUPER ATAQUE", dano: 550, precisao: 1.0, super: true, desc: "PIKACHU GRITA E ATACA!", cor: "#ff3c00" },
             { nome: "Thunderbolt", dano: 140, precisao: 1.0, desc: "Ataque Forte | Elétrico", cor: "#f1c40f" },
-            { nome: "Quick Attack", dano: 60, precisao: 1.0, desc: "Ataque Fraco (Não erra) | Normal", cor: "#a8a878" },
-            { nome: "Iron Tail", dano: 170, precisao: 0.75, desc: "Muito Forte (75% Chance) | Aço", cor: "#b8b8d0" },
+            { nome: "Quick Attack", dano: 60, precisao: 1.0, desc: "Ataque Fraco (Não erra)", cor: "#a8a878" },
+            { nome: "Iron Tail", dano: 170, precisao: 0.75, desc: "Muito Forte (75% Chance)", cor: "#b8b8d0" },
             { nome: "Electro Ball", dano: 110, precisao: 1.0, desc: "Ataque Médio | Elétrico", cor: "#f1c40f" },
-            { nome: "Volt Tackle", dano: 220, precisao: 1.0, recoil: 40, desc: "Extremo (Pikachu sofre recuo)", cor: "#e67e22" },
+            { nome: "Volt Tackle", dano: 220, precisao: 1.0, recoil: 40, desc: "Extremo (Sofre recuo)", cor: "#e67e22" },
             { nome: "Double Team", dano: 0, precisao: 1.0, escudo: true, desc: "Esquiva do próximo golpe", cor: "#bdc3c7" },
-            { nome: "Thunder", dano: 250, precisao: 0.6, desc: "Devastador (60% Chance) | Elétrico", cor: "#f1c40f" },
+            { nome: "Thunder", dano: 250, precisao: 0.6, desc: "Devastador (60% Chance)", cor: "#f1c40f" },
             { nome: "Nuzzle", dano: 40, precisao: 1.0, cura: 80, desc: "Muito Fraco + Cura HP", cor: "#f39c12" }
         ];
 
@@ -405,7 +404,7 @@
 
         function iniciarJogo(event) {
             event.stopPropagation();
-            initAudio();
+            initAudio(); // Libera as permissões de áudio do navegador aqui
             const splash = document.getElementById('splashContainer');
             splash.style.opacity = '0';
             splash.style.transform = 'scale(1.2)';
@@ -453,15 +452,14 @@
             let logMsg = "";
 
             if (golpe.super) {
-                // Executa o Grito original do arquivo de som + Trovão
+                // Ativa a voz real do Pikachu + Trovão
                 gritoPikachuSuper();
-                document.getElementById('logBox').innerText = "PIKACHUUUUUUUUUUUUUUUUUUUUUUUUUUUUU!!!";
+                document.getElementById('logBox').innerText = "PIKACHUUUUUUUU!!!";
 
-                // Executa a Animação física (Salto e crescimento na tela)
+                // Executa a animação visual na tela
                 pikachuImg.classList.add('super-jump-anim');
                 rayOverlay.classList.add('ray-active');
 
-                // Tremor completo na janela de exibição externa e na arena
                 document.body.classList.add('shake-super-effect');
                 gameContainer.classList.add('shake-super-effect');
                 mewtwoImg.classList.add('damage-blink');
@@ -482,7 +480,7 @@
                     document.getElementById('logBox').innerText = logMsg;
                     verificarFluxoJogo();
 
-                }, 1600); // Aguarda a conclusão do movimento completo do ataque
+                }, 1600);
 
             } else {
                 // ATAQUES COMUNS
