@@ -229,8 +229,8 @@
 </head>
 <body>
 
-    <!-- LINK DIRETO DO SERVIDOR DO MYINSTANTS (SEM BLOQUEIOS) -->
-    <audio id="pikachuVoice" src="https://www.myinstants.com/media/sounds/pikachu-thunderbolt.mp3" preload="auto" crossOrigin="anonymous"></audio>
+    <!-- LINK DIRETO DO SERVIDOR DO NOVO SOM (PIKACHU GRITANDO COM EXPLOSÃO) -->
+    <audio id="pikachuVoice" src="https://www.myinstants.com/media/sounds/pikachu-earrape-audio-cutter.mp3" preload="auto" crossOrigin="anonymous"></audio>
 
     <div class="splash-screen" id="splashScreen">
         <div class="splash-container" id="splashContainer">
@@ -280,15 +280,10 @@
         let audioCtx = null;
         const somPikachuReal = document.getElementById('pikachuVoice');
 
+        // Cria o contexto de áudio em silêncio no clique inicial apenas para desbloquear o navegador
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (somPikachuReal) {
-                somPikachuReal.play().then(() => {
-                    somPikachuReal.pause();
-                    somPikachuReal.currentTime = 0;
-                }).catch(e => console.log("Áudio liberado."));
             }
         }
 
@@ -371,7 +366,7 @@
         let ataquesNoPainel = [];
 
         const todosAtaquesPikachu = [
-            { nome: "SUPER ATAQUE", dano: 600, precisao: 1.0, super: true, desc: "PIKACHU THUNDERBOLT!", cor: "#ff3c00" },
+            { nome: "SUPER ATAQUE", dano: 600, precisao: 1.0, super: true, desc: "PIKACHU EXTREME!!!", cor: "#ff3c00" },
             { nome: "Thunderbolt", dano: 140, precisao: 1.0, desc: "Ataque Forte | Elétrico", cor: "#f1c40f" },
             { nome: "Quick Attack", dano: 60, precisao: 1.0, desc: "Ataque Fraco (Não erra)", cor: "#a8a878" },
             { nome: "Iron Tail", dano: 170, precisao: 0.75, desc: "Muito Forte (75% Chance)", cor: "#b8b8d0" },
@@ -392,7 +387,7 @@
 
         function iniciarJogo(event) {
             event.stopPropagation();
-            initAudio(); 
+            initAudio(); // Libera as permissões internas de áudio do navegador sem tocar som
             const splash = document.getElementById('splashContainer');
             splash.style.opacity = '0';
             splash.style.transform = 'scale(1.2)';
@@ -440,22 +435,22 @@
             let logMsg = "";
 
             if (golpe.super) {
-                // Toca a voz oficial do MyInstants
+                // Toca a voz estridente e estourada enviada!
                 gritoPikachuSuper();
-                document.getElementById('logBox').innerText = "PIKACHUUUUUUUU... THUNDERBOLT!!!";
+                document.getElementById('logBox').innerText = "PIKACHUUUUUUUUUUUUUUUUUUUUUUUU!!!";
 
-                // Avanço normal de ataque do Pikachu
+                // Movimento básico de investida
                 pikachuImg.classList.add('super-dash-forward');
                 
-                // Ativa a animação de piscar em várias cores (amarelo, branco, azul)
+                // Ativa os flashes rápidos coloridos (raio) na tela inteira
                 rayOverlay.classList.add('ray-active');
 
-                // Ativa tremor contínuo na tela e no fundo
+                // Ativa o tremor infinito na tela
                 document.body.classList.add('shake-super-effect');
                 gameContainer.classList.add('shake-super-effect');
                 mewtwoImg.classList.add('damage-blink');
 
-                // Duração baseada no tempo do áudio clássico
+                // Espera o tempo da explosão do áudio terminar
                 setTimeout(() => {
                     pikachuImg.classList.remove('super-dash-forward');
                     rayOverlay.classList.remove('ray-active');
@@ -465,14 +460,14 @@
 
                     let danoFinal = golpe.dano;
                     enemy.hp = Math.max(0, enemy.hp - danoFinal);
-                    logMsg = `⚡ CRITICAL HIT! O ThunderBolt destruiu tudo! Mewtwo perdeu -${danoFinal} HP!`;
+                    logMsg = `⚡ EXPLOSÃO DESTRUTIVA! O Super Ataque obliterou o cenário! Mewtwo perdeu -${danoFinal} HP!`;
                     
                     somDanoMewtwo();
                     atualizarBarras();
                     document.getElementById('logBox').innerText = logMsg;
                     verificarFluxoJogo();
 
-                }, 2400); 
+                }, 2600); 
 
             } else {
                 // ATAQUES COMUNS
