@@ -104,20 +104,27 @@
         .flash-shadow { background: #3a005c !important; }
         .flash-damage { background: #520000 !important; }
         
-        /* ANIMAÇÃO DO SUPER ATAQUE ELÉTRICO */
+        /* ANIMAÇÃO APOCALÍPTICA DO SUPER ATAQUE ELÉTRICO */
         @keyframes superAtkFlash {
-            0%, 20%, 40%, 60%, 80%, 100% { background: #7a6500 !important; }
-            10%, 30%, 50%, 70%, 90% { background: #ffffff !important; }
+            0%, 20%, 40%, 60%, 80%, 100% { background: #ffcc00 !important; filter: brightness(1.5); }
+            10%, 30%, 50%, 70%, 90% { background: #ffffff !important; filter: brightness(2); }
         }
-        .flash-super { animation: superAtkFlash 0.8s ease-in-out; }
+        .flash-super { animation: superAtkFlash 1.5s ease-in-out; }
 
+        /* TREMORES DE TELA EXTRA FORTES */
         @keyframes shake {
             0%, 100% { transform: translate(0, 0); }
-            10%, 30%, 50%, 70%, 90% { transform: translate(-12px, 6px); }
-            20%, 40%, 60%, 80% { transform: translate(12px, -6px); }
+            10%, 30%, 50%, 70%, 90% { transform: translate(-8px, 4px); }
+            20%, 40%, 60%, 80% { transform: translate(8px, -4px); }
         }
         .shake-effect { animation: shake 0.35s ease-in-out; }
-        .shake-super-effect { animation: shake 0.8s ease-in-out infinite; }
+
+        @keyframes superShake {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            5%, 25%, 45%, 65%, 85% { transform: translate(-25px, 15px) scale(1.05); }
+            15%, 35%, 55%, 75%, 95% { transform: translate(25px, -15px) scale(0.95); }
+        }
+        .shake-super-effect { animation: superShake 1.5s cubic-bezier(.36,.07,.19,.97) both; }
 
         /* ARENA */
         .screen-area {
@@ -155,7 +162,7 @@
 
         .attack-dash-left { transform: translate(-50px, 30px) scale(1.1); }
         .attack-dash-right { transform: translate(50px, -30px) scale(1.1); }
-        .super-charge-anim { transform: scale(1.4) translate(30px, -15px); filter: brightness(2) drop-shadow(0 0 15px #f1c40f); }
+        .super-charge-anim { transform: scale(1.6) translate(40px, -20px); filter: brightness(2.5) drop-shadow(0 0 25px #f1c40f); }
         .damage-blink { filter: matrix(1, 0, 0, 1, 0, 0) brightness(5) sepia(1) hue-rotate(-50deg) !important; }
 
         .shield-effect { border-color: #f1c40f !important; box-shadow: 0 0 15px #f1c40f !important; }
@@ -245,10 +252,14 @@
         </div>
     </div>
 
+    <!-- AUDIO ELEMENT COM O GRITO ORIGINAL DO ANIME -->
+    <audio id="pikachuVoice" src="https://www.myinstants.com/media/sounds/pikachu-super.mp3" preload="auto"></audio>
+
     <div class="dev-signature">BY: DEV WHAGTON</div>
 
     <script>
         let audioCtx = null;
+        const pikachuAudioReal = document.getElementById('pikachuVoice');
 
         function initAudio() {
             if (!audioCtx) {
@@ -256,30 +267,25 @@
             }
         }
 
-        // GRITO DE SUPER ATAQUE DO PIKACHU
+        // FUNÇÃO DO SUPER GRITO DO PIKACHU + ESTRONDO DE TROVÃO
         function gritoEletricoPikachu() {
             initAudio();
             
-            // Lógica de Voz para falar PIKACHUUUUUUUUUU
-            if ('speechSynthesis' in window) {
-                let falar = new SpeechSynthesisUtterance("Pikaachuuuuuuuuuuuuuuuuuuuuuuuuuuu");
-                falar.lang = 'ja-JP'; // Sotaque japonês original do anime
-                falar.rate = 1.3;     // Um pouco mais rápido e enérgico
-                falar.pitch = 1.8;    // Voz fina e infantil igual ao Pikachu
-                falar.volume = 1.0;
-                window.speechSynthesis.speak(falar);
-            }
+            // Toca a voz oficial do arquivo
+            pikachuAudioReal.currentTime = 0;
+            pikachuAudioReal.volume = 1.0;
+            pikachuAudioReal.play().catch(e => console.log("Áudio bloqueado pelo navegador até interação."));
 
-            // Som de Trovão Destruidor de Fundo
+            // Sintetizador de graves pesados para dar peso de Trovão Real
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(2000, audioCtx.currentTime + 0.8);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+            osc.frequency.setValueAtTime(60, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(10, audioCtx.currentTime + 1.5);
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
             osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.8);
+            osc.start(); osc.stop(audioCtx.currentTime + 1.5);
         }
 
         function somAtaquePikachu() {
@@ -347,15 +353,14 @@
             osc.start(); osc.stop(audioCtx.currentTime + 0.2);
         }
 
-        // VARIÁVEIS DE JOGO
+        // STATUS DO JOGO
         let player = { nome: "Pikachu", hp: 800, maxHp: 800, escudo: false };
         let enemy = { nome: "Mewtwo", hp: 1000, maxHp: 1000 };
         let batalhaAtActive = true;
         let ataquesNoPainel = [];
 
-        // AGORA SÃO 9 ATAQUES POSSÍVEIS NO BANCO DE DADOS (INCLUINDO O SUPER ATAQUE)
         const todosAtaquesPikachu = [
-            { nome: "SUPER ATAQUE (Pikachu!)", dano: 380, precisao: 0.9, super: true, desc: "ULTRA ELÉTRICO | PIKACHUUUU!!!", cor: "#ffcc00" },
+            { nome: "SUPER ATAQUE", dano: 450, precisao: 0.95, super: true, desc: "ULTRA TROVÃO | PIKACHUUUU!!!", cor: "#ffcc00" },
             { nome: "Thunderbolt", dano: 140, precisao: 1.0, desc: "Ataque Forte | Elétrico", cor: "#f1c40f" },
             { nome: "Quick Attack", dano: 60, precisao: 1.0, desc: "Ataque Fraco (Não erra) | Normal", cor: "#a8a878" },
             { nome: "Iron Tail", dano: 170, precisao: 0.75, desc: "Muito Forte (75% Chance) | Aço", cor: "#b8b8d0" },
@@ -397,8 +402,10 @@
                 btn.className = 'move-btn';
                 btn.style.borderLeftColor = golpe.cor;
                 if(golpe.super) {
-                    btn.style.background = "linear-gradient(135deg, #4a3b00 0%, #1a1500 100%)";
-                    btn.style.textShadow = "0 0 5px #fff";
+                    btn.style.background = "linear-gradient(135deg, #ff9900 0%, #cc1100 100%)";
+                    btn.style.color = "#fff";
+                    btn.style.boxShadow = "0 0 10px #ffcc00";
+                    btn.style.animation = "floatPlayer 1s ease-in-out infinite";
                 }
                 btn.innerHTML = `${golpe.nome}<span>${golpe.desc}</span>`;
                 btn.onclick = () => jogarTurno(index);
@@ -407,21 +414,32 @@
         }
 
         function dispararFlash(classeFlash, tempo = 150) {
+            document.body.className = ''; // Limpa classes anteriores
             document.body.classList.add(classeFlash);
             setTimeout(() => document.body.classList.remove(classeFlash), tempo);
         }
 
         function tremerTelaPisque(sprite, somEfeito, ultra = false) {
-            gameContainer.classList.add(ultra ? 'shake-super-effect' : 'shake-effect');
-            sprite.classList.add('damage-blink');
-            dispararFlash('flash-damage', ultra ? 700 : 150);
+            if(ultra) {
+                // ANIMAÇÃO APOCALÍPTICA NA TELA INTEIRA (BODY E GAME CONTAINER)
+                document.body.classList.add('shake-super-effect');
+                gameContainer.classList.add('shake-super-effect');
+                sprite.classList.add('damage-blink');
+                dispararFlash('flash-super', 1500);
+            } else {
+                gameContainer.classList.add('shake-effect');
+                sprite.classList.add('damage-blink');
+                dispararFlash('flash-damage', 150);
+            }
+
             if(somEfeito) somEfeito();
             
             setTimeout(() => {
+                document.body.classList.remove('shake-super-effect');
                 gameContainer.classList.remove('shake-effect');
                 gameContainer.classList.remove('shake-super-effect');
                 sprite.classList.remove('damage-blink');
-            }, ultra ? 750 : 350);
+            }, ultra ? 1500 : 350);
         }
 
         function jogarTurno(indexAtaque) {
@@ -434,32 +452,33 @@
             let logMsg = "";
 
             if (golpe.super) {
-                // ANIMAÇÃO EXCLUSIVA DO SUPER ATAQUE
+                // ATIVAÇÃO TOTAL DO SUPER ATAQUE
                 pikachuImg.classList.add('super-charge-anim');
                 gritoEletricoPikachu();
-                document.getElementById('logBox').innerText = "PIKACHU ESTÁ CONCENTRANDO TODO O SEU PODER ELÉTRICO!!!";
+                document.getElementById('logBox').innerText = "PIKACHU GRITA E LIBERA UM PODER SURREAL!!!";
                 
+                // Tremer tudo enquanto ele grita e canaliza o trovão
+                tremerTelaPisque(mewtwoImg, somDanoMewtwo, true);
+
                 setTimeout(() => {
                     pikachuImg.classList.remove('super-charge-anim');
                     
                     if (Math.random() > golpe.precisao) {
-                        logMsg = `Pikachu usou seu ${golpe.nome}, mas o Mewtwo conseguiu desviar no último segundo!`;
+                        logMsg = `Pikachu liberou o ${golpe.nome}, mas o Mewtwo usou teletransporte e escapou do feixe elétrico!`;
                     } else {
                         let danoFinal = golpe.dano;
                         enemy.hp = Math.max(0, enemy.hp - danoFinal);
-                        logMsg = `⚡ CRITICAL! Pikachu disparou o ${golpe.nome} destruidor!! Mewtwo foi atingido em cheio! (-${danoFinal} HP)`;
-                        tremerTelaPisque(mewtwoImg, somDanoMewtwo, true);
-                        dispararFlash('flash-super', 800);
+                        logMsg = `💥 IMPACTO FATAL! Pikachu detonou o ${golpe.nome}!! O chão tremeu e Mewtwo foi pulverizado! (-${danoFinal} HP)`;
                     }
                     
                     atualizarBarras();
                     document.getElementById('logBox').innerText = logMsg;
                     verificarFluxoJogo();
 
-                }, 1500); // Dá tempo para o grito e a carga do golpe acontecerem
+                }, 1600); // Sincronizado perfeitamente com o tempo do grito
 
             } else {
-                // ATAQUES NORMAIS DO PIKACHU
+                // ATAQUES NORMAIS
                 pikachuImg.classList.add('attack-dash-right');
                 somAtaquePikachu();
                 setTimeout(() => pikachuImg.classList.remove('attack-dash-right'), 250);
