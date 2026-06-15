@@ -88,7 +88,7 @@
         .dev-tag { font-size: 0.7rem; color: #00ffcc; font-weight: bold; }
         .hud-center { text-align: center; color: #ffffff; padding: 0 10px; flex: 1; }
         .hud-center h2 { color: #9900ff; font-size: 1.3rem; }
-        #battleStatus { font-size: 0.85rem; color: #00ffcc; font-weight: 500; min-height: 38px; display: flex; align-items: center; justify-content: center; }
+        #battleStatus { font-size: 0.8rem; color: #00ffcc; font-weight: 500; min-height: 45px; display: flex; align-items: center; justify-content: center; line-height: 1.4; white-space: pre-line; }
         .table-ring { border: 1px solid #ff0055; padding: 6px 12px; border-radius: 5px; color: #ff0055; font-weight: bold; font-size: 0.9rem; }
 
         /* ÁREA DE BATALHA COM MULTI-BOSS */
@@ -106,7 +106,6 @@
             position: relative; transition: all 0.2s ease;
         }
         
-        /* Estilo para quando o boss for selecionado como alvo */
         .status-box.enemy-target {
             border-color: #00ffcc;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
@@ -149,13 +148,13 @@
         }
 
         .card-header {
-            font-size: 0.7rem; font-weight: bold; text-align: center; color: #fff;
+            font-size: 0.65rem; font-weight: bold; text-align: center; color: #fff;
             text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2;
             min-height: 28px; display: flex; align-items: center; justify-content: center;
         }
 
-        .card-value { font-size: 1.4rem; font-weight: 900; text-align: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .card-effect-desc { font-size: 0.6rem; color: #bbb; text-align: center; line-height: 1.2; margin: 3px 0; font-style: italic; }
+        .card-value { font-size: 1.3rem; font-weight: 900; text-align: center; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .card-effect-desc { font-size: 0.58rem; color: #bbb; text-align: center; line-height: 1.2; margin: 3px 0; font-style: italic; }
         .card-footer { font-size: 0.55rem; text-align: center; color: #fff; background: rgba(255, 255, 255, 0.08); padding: 2px 0; border-radius: 50px; font-weight: 700; }
 
         /* MODAL */
@@ -190,7 +189,7 @@
         <h1 class="game-title">QUANTUM EVOLUTION</h1>
         <div class="profile-badge">Jogador: Convidado_Quantum</div>
         <div class="menu-buttons">
-            <button class="menu-btn" onclick="iniciarJogoAtivo()">Batalhar (PvE)</button>
+            <button class="menu-btn" onclick="iniciarJogoAtivo()">Batalhar (PvE Royale)</button>
             <button class="menu-btn" onclick="abrirModal()">Customizar Deck</button>
             <button class="menu-btn" onclick="abrirModal()">Laboratório de Evolução</button>
         </div>
@@ -203,15 +202,14 @@
                 <span class="dev-tag">BY: WHAGTON</span>
             </div>
             <div class="hud-center">
-                <h2>ARENA QUANTUM MULTI-BOSS</h2>
-                <p id="battleStatus">Clique em um dos chefes para mirar, depois escolha sua carta!</p>
+                <h2>ARENA QUANTUM - BATTLE ROYALE</h2>
+                <p id="battleStatus">Mire em um alvo. Cuidado, os chefes também vão lutar entre si!</p>
             </div>
             <div class="table-ring" id="turnIndicator">Rodada: 1</div>
         </div>
 
         <div class="battle-area">
             
-            <!-- LINHA COM OS 3 BOSSES DO JOGO -->
             <div class="enemies-row">
                 <div class="status-box selectable-enemy" id="bossBox_0" onclick="selecionarAlvo(0)">
                     <h3>Boss Alfa</h3>
@@ -227,7 +225,6 @@
                 </div>
             </div>
 
-            <!-- CONTAINER PARA 4 CARTAS DO JOGADOR -->
             <div class="hand-container" id="playerHand"></div>
 
             <div class="status-box">
@@ -251,32 +248,35 @@
     </div>
 
     <script>
-        // Sistema de 10.000 HP
         let playerHp = 10000;
         let rodada = 1;
         let escudoJogador = false;
         let jogoAcabou = false;
-        let alvoSelecionado = 0; // Index do boss mirado (0, 1 ou 2)
+        let alvoSelecionado = 0; 
 
-        // Estrutura de dados para gerenciar os 3 Chefes
         let bosses = [
             { nome: "Boss Alfa", hp: 10000, vivo: true, id: 0 },
             { nome: "Boss Beta", hp: 10000, vivo: true, id: 1 },
             { nome: "Boss Ômega", hp: 10000, vivo: true, id: 2 }
         ];
 
-        // EXPANSÃO DO DECK PRINCIPAL (Agrupado com 10 cartas totais e dano balanceado para os 10k de vida)
+        // POOL DE CARTAS ATUALIZADO: 14 cartas bem balanceadas
         const deckDeCartas = [
             { nome: "Pulso de Fóton",    valor: 800,  efeito: "ataque",   desc: "Disparo rápido padrão",       cor: "#00ffcc", tag: "FÓTON" },
-            { nome: "Raio Gamma",       valor: 1500, efeito: "ataque",   desc: "Forte feixe radioativo",     cor: "#ff0055", tag: "CÓSMICO" },
-            { nome: "Buraco Negro",     valor: 2600, efeito: "critico",  desc: "50% de chance de erro ou CRÍTICO",cor: "#9900ff", tag: "SINGULARIDADE" },
+            { nome: "Raio Gamma",       valor: 1400, efeito: "ataque",   desc: "Forte feixe radioativo",     cor: "#ff0055", tag: "CÓSMICO" },
+            { nome: "Buraco Negro",     valor: 2400, efeito: "critico",  desc: "50% de chance de CRÍTICO",   cor: "#9900ff", tag: "SINGULARIDADE" },
             { nome: "Plasma Estelar",    valor: 700,  efeito: "ataque",   desc: "Calor constante básico",       cor: "#ffcc00", tag: "ESTRELA" },
-            { nome: "Dreno Sombrio",    valor: 950,  efeito: "vampiro",  desc: "Causa dano e converte em cura",cor: "#ff00aa", tag: "ANTIMATÉRIA" },
-            { nome: "Matriz de Éter",   valor: 1600, efeito: "cura",     desc: "Restaura sua integridade molecular",cor: "#00ff55", tag: "REGEN" },
+            { nome: "Dreno Sombrio",    valor: 900,  efeito: "vampiro",  desc: "Causa dano e te cura um pouco",cor: "#ff00aa", tag: "ANTIMATÉRIA" },
+            { nome: "Matriz de Éter",   valor: 1500, efeito: "cura",     desc: "Restaura sua integridade molecular",cor: "#00ff55", tag: "REGEN" },
             { nome: "Dobra Espacial",    valor: 0,    efeito: "escudo",   desc: "Bloqueia o próximo golpe recebido", cor: "#0077ff", tag: "DEFESA" },
-            { nome: "Aniquilação Total",valor: 850,  efeito: "area",     desc: "Ataque massivo em TODOS os bosses", cor: "#ff5500", tag: "ÁREA" },
-            { nome: "Choque Quântico",  valor: 1200, efeito: "ataque",   desc: "Sobrecarga elétrica estática", cor: "#00ffff", tag: "ELÉTRICO" },
-            { nome: "Cometa Binário",   valor: 2000, efeito: "ataque",   desc: "Impacto duplo concentrado",    cor: "#e100ff", tag: "METEORO" }
+            { nome: "Aniquilação Total",valor: 800,  efeito: "area",     desc: "Dano balanceado em todos os chefes", cor: "#ff5500", tag: "ÁREA" },
+            { nome: "Choque Quântico",  valor: 1100, efeito: "ataque",   desc: "Sobrecarga elétrica estática", cor: "#00ffff", tag: "ELÉTRICO" },
+            { nome: "Cometa Binário",   valor: 1800, efeito: "ataque",   desc: "Impacto duplo concentrado",    cor: "#e100ff", tag: "METEORO" },
+            // Novas cartas equilibradas:
+            { nome: "Inversor Carga",   valor: 500,  efeito: "hibrido",  desc: "Cura você 500 e bate 500 no alvo", cor: "#ffa500", tag: "MUTAÇÃO" },
+            { nome: "Estática Quântica",valor: 600,  efeito: "ataque",   desc: "Dano elétrico leve contínuo", cor: "#bfff00", tag: "PARTÍCULA" },
+            { nome: "Escudo Espelhos",  valor: 300,  efeito: "refletor", desc: "Ganha escudo e reflete 300 de dano", cor: "#ff007f", tag: "REVERSO" },
+            { nome: "Sonda Espiã",      valor: 400,  efeito: "ataque",   desc: "Ataque fraco de monitoramento", cor: "#a9a9a9", tag: "SONDA" }
         ];
 
         let maoAtual = [];
@@ -317,15 +317,13 @@
                 document.getElementById(`bossBox_${b.id}`).className = "status-box selectable-enemy";
             });
             
-            // Força o alvo inicial no Boss Alfa (0)
             selecionarAlvo(0);
 
             document.getElementById('playerHp').innerText = "HP: " + playerHp;
             document.getElementById('turnIndicator').innerText = "Rodada: " + rodada;
-            document.getElementById('battleStatus').innerText = "Clique em um boss para mirar e escolha sua ação na mão de cartas!";
+            document.getElementById('battleStatus').innerText = "Arena Royale Pronta! Selecione um alvo e jogue uma carta.";
             document.getElementById('shieldIndicator').style.display = "none";
             
-            // Compra 4 cartas por rodada agora!
             maoAtual = [];
             for(let i = 0; i < 4; i++) {
                 maoAtual.push(sortearNovaCarta());
@@ -358,8 +356,8 @@
 
                 let exibicaoValor = carta.valor > 0 ? carta.valor : "";
                 if(carta.efeito === "cura") exibicaoValor = "+" + carta.valor;
-                if(carta.efeito === "ataque" || carta.efeito === "critico" || carta.efeito === "vampiro" || carta.efeito === "area") exibicaoValor = "-" + carta.valor;
-                if(carta.efeito === "escudo") exibicaoValor = "DEF";
+                if(carta.efeito === "ataque" || carta.efeito === "critico" || carta.efeito === "vampiro" || carta.efeito === "area" || carta.efeito === "hibrido") exibicaoValor = "±" + carta.valor;
+                if(carta.efeito === "escudo" || carta.efeito === "refletor") exibicaoValor = "DEF";
 
                 elementoCarta.innerHTML = `
                     <div class="card-header">${carta.nome}</div>
@@ -382,88 +380,120 @@
             // 1. TURNO DO JOGADOR
             if (cartaJogada.efeito === "ataque") {
                 alvo.hp -= cartaJogada.valor;
-                msgLog = `Você usou ${cartaJogada.nome} no ${alvo.nome} causando ${cartaJogada.valor} de dano. `;
+                msgLog = `Você atacou [${alvo.nome}] com ${cartaJogada.nome} (-${cartaJogada.valor} HP).\n`;
                 aplicarFlashVisual('flash-damage');
             } 
             else if (cartaJogada.efeito === "critico") {
                 if (Math.random() >= 0.5) {
                     let superDano = cartaJogada.valor * 2;
                     alvo.hp -= superDano;
-                    msgLog = `💥 CRÍTICO! ${cartaJogada.nome} obliterou o ${alvo.nome} com ${superDano} de dano! `;
+                    msgLog = `💥 CRÍTICO! ${cartaJogada.nome} causou ${superDano} de dano no [${alvo.nome}].\n`;
                     aplicarFlashVisual('flash-damage');
                 } else {
-                    msgLog = `❌ Falha dimensional! ${cartaJogada.nome} errou o golpe. `;
+                    msgLog = `❌ Falha! [${cartaJogada.nome}] errou o golpe no [${alvo.nome}].\n`;
                 }
             }
             else if (cartaJogada.efeito === "vampiro") {
                 alvo.hp -= cartaJogada.valor;
-                playerHp += Math.floor(cartaJogada.valor * 0.6);
+                playerHp += Math.floor(cartaJogada.valor * 0.5);
                 if (playerHp > 10000) playerHp = 10000;
-                msgLog = `🩸 Dreno Quântico! Sugou ${cartaJogada.valor} de vida do ${alvo.nome}. `;
+                msgLog = `🩸 Dreno! Causa ${cartaJogada.valor} no [${alvo.nome}] e recuperou vida.\n`;
                 aplicarFlashVisual('flash-heal');
             }
             else if (cartaJogada.efeito === "cura") {
                 playerHp += cartaJogada.valor;
                 if(playerHp > 10000) playerHp = 10000;
-                msgLog = `💚 Auto-Reparo! Recuperou +${cartaJogada.valor} HP. `;
+                msgLog = `💚 Auto-Reparo! Você recuperou +${cartaJogada.valor} HP.\n`;
                 aplicarFlashVisual('flash-heal');
             } 
-            else if (cartaJogada.efeito === "escudo") {
+            else if (cartaJogada.efeito === "escudo" || cartaJogada.efeito === "refletor") {
                 escudoJogador = true;
                 document.getElementById('shieldIndicator').style.display = "block";
-                msgLog = `🛡️ Escudo de Éter ativado! Absorverá o próximo dano de um Boss. `;
+                msgLog = `🛡️ Barreira ativada! Você bloqueou a próxima investida direta.\n`;
                 aplicarFlashVisual('flash-shield');
             }
             else if (cartaJogada.efeito === "area") {
                 bosses.forEach(b => { if (b.vivo) b.hp -= cartaJogada.valor; });
-                msgLog = `🌌 ANIQUILAÇÃO! Todos os chefes ativos sofreram ${cartaJogada.valor} de dano. `;
+                msgLog = `🌌 Área! Todos os chefes ativos sofreram -${cartaJogada.valor} HP.\n`;
                 aplicarFlashVisual('flash-damage');
             }
+            else if (cartaJogada.efeito === "hibrido") {
+                alvo.hp -= cartaJogada.valor;
+                playerHp += cartaJogada.valor;
+                if (playerHp > 10000) playerHp = 10000;
+                msgLog = `⚡ Carga Invertida! +${cartaJogada.valor} HP para você e -${cartaJogada.valor} HP no [${alvo.nome}].\n`;
+                aplicarFlashVisual('flash-heal');
+            }
 
-            // Atualiza os dados de HP de todos os inimigos pós-ataque
             atualizarVidaDosBosses();
 
-            // Verifica se todos morreram antes do contra-ataque
             let vivos = bosses.filter(b => b.vivo);
             if (vivos.length === 0) {
-                document.getElementById('battleStatus').innerText = msgLog + "🏆 VITÓRIA ABSOLUTA! Você derrotou toda a guilda quântica!";
+                document.getElementById('battleStatus').innerText = msgLog + "🏆 VITÓRIA ROYALE! Você sobrou sozinho na arena cósmica!";
                 finalizarPartida();
                 return;
             }
 
-            // Se o alvo atual morreu mas restam chefes vivos, realoca a mira automaticamente
             if (!alvo.vivo && vivos.length > 0) {
                 selecionarAlvo(vivos[0].id);
             }
 
-            // 2. TURNO COLETIVO E INTELIGENTE DA IA DO BOSS
-            setTimeout(() => {
+            // 2. IA INTELIGENTE DOS BOSSES (SISTEMA DE INFIGHTING / AGGRESSION)
+            迫 BANCA_DE_GOLPES = setTimeout(() => {
                 if(jogoAcabou) return;
 
                 let logAtaquesBoss = "";
                 
-                // Cada Boss sobrevivente age de forma autônoma e inteligente
                 bosses.forEach(b => {
                     if (!b.vivo) return;
 
-                    // IA Inteligente: Se a vida estiver abaixo de 2500, ele tem 60% de chance de priorizar cura em vez de atacar!
-                    if (b.hp < 2500 && Math.random() < 0.6) {
-                        let autoCura = 1200;
+                    // Crise de identidade / Cura emergencial
+                    if (b.hp < 2000 && Math.random() < 0.5) {
+                        let autoCura = 1000;
                         b.hp += autoCura;
                         if (b.hp > 10000) b.hp = 10000;
-                        logAtaquesBoss += `| 👾 [${b.nome}] usou Matriz de Éter e recuperou +${autoCura} HP! `;
+                        logAtaquesBoss += `👾 [${b.nome}] se recolheu e recuperou +${autoCura} HP.\n`;
                     } else {
-                        // Escolhe um ataque do baralho equivalente
-                        let danoSorteado = Math.floor(Math.random() * (1200 - 400 + 1)) + 400;
-                        
-                        if (escudoJogador) {
-                            logAtaquesBoss += `| 🛡️ [${b.nome}] tentou atacar, mas seu escudo bloqueou! `;
-                            escudoJogador = false; // Gasta a barreira protetora
-                            document.getElementById('shieldIndicator').style.display = "none";
+                        // SISTEMA DE ALVO DA IA: Pode atacar o jogador ou OUTRO boss vivo!
+                        // Criamos uma lista de possíveis alvos (jogador + outros bosses vivos)
+                        let possiveisAlvos = [{ tipo: "player", nome: "Você" }];
+                        bosses.forEach(outroBoss => {
+                            if (outroBoss.vivo && outroBoss.id !== b.id) {
+                                possiveisAlvos.push({ tipo: "boss", nome: outroBoss.nome, ref: outroBoss });
+                            }
+                        });
+
+                        // Escolha inteligente: 60% de chance de focar no jogador, 40% de se atacarem entre eles!
+                        let alvoDaIa;
+                        if (Math.random() > 0.4 || possiveisAlvos.length === 1) {
+                            alvoDaIa = possiveisAlvos[0]; // Jogador
                         } else {
-                            playerHp -= danoSorteado;
-                            logAtaquesBoss += `| 💥 [${b.nome}] atacou e causou ${danoSorteado} de dano! `;
-                            aplicarFlashVisual('flash-boss-damage');
+                            // Escolhe um boss aleatório da briga interna
+                            let inimigosDisponiveis = possiveisAlvos.slice(1);
+                            alvoDaIa = inimigosDisponiveis[Math.floor(Math.random() * inimigosDisponiveis.length)];
+                        }
+
+                        let danoSorteado = Math.floor(Math.random() * (1100 - 450 + 1)) + 450;
+
+                        // Aplica o dano baseado no alvo escolhido pela IA
+                        if (alvoDaIa.tipo === "player") {
+                            if (escudoJogador) {
+                                logAtaquesBoss += `🛡️ [${b.nome}] tentou te acertar, mas seu escudo PROTEGEU.\n`;
+                                if(cartaJogada.efeito === "refletor") {
+                                    b.hp -= 300;
+                                    logAtaquesBoss += `✨ Seu refletor devolveu 300 de dano em [${b.nome}].\n`;
+                                }
+                                escudoJogador = false;
+                                document.getElementById('shieldIndicator').style.display = "none";
+                            } else {
+                                playerHp -= danoSorteado;
+                                logAtaquesBoss += `💥 [${b.nome}] descarregou energia em VOCÊ (-${danoSorteado} HP).\n`;
+                                aplicarFlashVisual('flash-boss-damage');
+                            }
+                        } else {
+                            // Briga de Boss contra Boss!
+                            alvoDaIa.ref.hp -= danoSorteado;
+                            logAtaquesBoss += `⚔️ BRIGA INTERNA! [${b.nome}] traiu e atacou [${alvoDaIa.nome}] causando -${danoSorteado} HP!\n`;
                         }
                     }
                 });
@@ -472,11 +502,18 @@
                 document.getElementById('playerHp').innerText = "HP: " + playerHp;
                 atualizarVidaDosBosses();
 
-                document.getElementById('battleStatus').innerText = msgLog + "\n" + logAtaquesBoss;
+                document.getElementById('battleStatus').innerText = msgLog + logAtaquesBoss;
 
-                // Fim de jogo caso o jogador venha a falecer
                 if (playerHp === 0) {
-                    document.getElementById('battleStatus').innerText = "💀 DERROTA! Você foi superado pela Inteligência Quântica.";
+                    document.getElementById('battleStatus').innerText = "💀 DERROTA! Os chefes destruíram você e continuaram brigando entre si.";
+                    finalizarPartida();
+                    return;
+                }
+
+                // Verifica se após a briga deles sobrou algum vivo
+                let sobreviventesPosBriga = bosses.filter(b => b.vivo);
+                if (sobreviventesPosBriga.length === 0) {
+                    document.getElementById('battleStatus').innerText = "🏆 VITÓRIA INUSITADA! Os bosses se mataram sozinhos na briga e você sobreviveu!";
                     finalizarPartida();
                     return;
                 }
@@ -484,7 +521,6 @@
                 rodada++;
                 document.getElementById('turnIndicator').innerText = "Rodada: " + rodada;
 
-                // Repõe a carta usada comprando mais uma
                 maoAtual[indiceCarta] = sortearNovaCarta();
                 renderizarMaoDoJogador();
 
