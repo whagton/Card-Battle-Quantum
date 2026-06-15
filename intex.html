@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Battle Arena - Quantum Evolution</title>
     <style>
-        @import url('https://googleapis.com');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Orbitron:wght@400;700;900&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -16,7 +16,7 @@
             transition: background 0.1s ease;
         }
 
-        /* 🆕 NOVA TELA DE INICIALIZAÇÃO (SPLASH SCREEN) */
+        /* TELA DE INICIALIZAÇÃO (SPLASH SCREEN) */
         .splash-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(circle at center, #0a0518 0%, #020208 100%);
@@ -155,27 +155,17 @@
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .dissolve-grid {
-            position: absolute; width: 100%; height: 100%; top:0; left:0;
-            background: #003366; display: none; pointer-events: none;
-        }
-
         .terminal-text {
             font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: #ff0055;
             text-align: center; max-width: 600px; min-height: 50px; margin-top: 30px;
             text-shadow: 0 0 10px rgba(255,0,85,0.5); padding: 0 20px;
         }
 
-        .skip-btn {
-            position: absolute; bottom: 40px; right: 40px; font-family: 'Orbitron', sans-serif;
-            padding: 8px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
-            color: #aaa; border-radius: 4px; cursor: pointer; display: none;
-        }
-
         /* TABULEIRO DO JOGO ATIVO */
         .board-screen {
             display: none; width: 100vw; height: 100vh; flex-direction: column;
             justify-content: space-between; padding: 15px; background: #030308;
+            position: fixed; top: 0; left: 0; z-index: 5;
         }
         .board-hud {
             display: flex; justify-content: space-between; align-items: center;
@@ -201,6 +191,108 @@
         }
         .credits-container:hover::after { opacity: 1; }
 
-        .hud-center { text-align: center; font-family: 'Orbitron', sans-serif; }
-        
-        .table-ring {
+        .hud-center { text-align: center; font-family: 'Orbitron', sans-serif; color: #00ffcc;}
+        .table-ring { border: 1px solid #333; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-container">
+            <h1 class="splash-title">CARD BATTLE ARENA</h1>
+            <button class="start-game-btn" onclick="avancarSplash()">Iniciar Conexão</button>
+        </div>
+    </div>
+
+    <div class="beta-welcome-screen" id="betaScreen" style="display: none; opacity: 0;">
+        <div class="beta-box">
+            <h2>Fase de Testes Beta</h2>
+            <p>Quantum Evolution está em sua fase inicial de maturação quântica. Seus feedbacks guiarão o balanço da arena cósmica.</p>
+            <button class="beta-btn" onclick="avancarBeta()">Entrar na Arena</button>
+        </div>
+    </div>
+
+    <div class="screen" id="mainMenu" style="display: none;">
+        <h1 class="game-title">QUANTUM EVOLUTION</h1>
+        <div class="profile-badge">Jogador: Convidado_Quantum</div>
+        <div class="menu-buttons">
+            <button class="menu-btn" onclick="iniciarJogoAtivo()">Batalhar (PvE)</button>
+            <button class="menu-btn" onclick="abrirModal()">Customizar Deck</button>
+            <button class="menu-btn" onclick="abrirModal()">Laboratório de Evolução</button>
+        </div>
+    </div>
+
+    <div class="board-screen" id="gameBoard">
+        <div class="board-hud">
+            <div class="credits-container">
+                <span class="dev-tag">DEVELOPER MODE</span>
+                <span class="dev-tag">BY: WHAGTON</span>
+            </div>
+            <div class="hud-center">
+                <h2>ARENA QUANTUM</h2>
+                <p>O combate começou!</p>
+            </div>
+            <div class="table-ring">Rodada: 1</div>
+        </div>
+        <div style="text-align: center; margin-top: 50px;">
+            <p>Espaço reservado para as cartas...</p>
+            <button class="menu-btn" style="margin-top:20px; width:auto; padding: 10px 20px;" onclick="voltarAoMenu()">Voltar ao Menu</button>
+        </div>
+    </div>
+
+    <div class="modal" id="alertModal">
+        <div class="modal-content">
+            <h3>Setor Bloqueado</h3>
+            <p>Esta funcionalidade está sendo processada na Singularidade Tecnológica do Whagton e estará disponível na próxima atualização da Beta.</p>
+            <button class="modal-btn" onclick="fecharModal()">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        function avancarSplash() {
+            const splash = document.getElementById('splashScreen');
+            const beta = document.getElementById('betaScreen');
+            
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                beta.style.display = 'flex';
+                setTimeout(() => beta.style.opacity = '1', 50);
+            }, 800);
+        }
+
+        function avancarBeta() {
+            const beta = document.getElementById('betaScreen');
+            const menu = document.getElementById('mainMenu');
+            
+            beta.style.opacity = '0';
+            setTimeout(() => {
+                beta.style.display = 'none';
+                menu.style.display = 'flex';
+            }, 600);
+        }
+
+        function iniciarJogoAtivo() {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('gameBoard').style.display = 'flex';
+            
+            // Efeito visual de entrada na arena
+            document.body.classList.add('flash-anomalia');
+            setTimeout(() => document.body.classList.remove('flash-anomalia'), 500);
+        }
+
+        function voltarAoMenu() {
+            document.getElementById('gameBoard').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'flex';
+        }
+
+        function abrirModal() {
+            document.getElementById('alertModal').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('alertModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
