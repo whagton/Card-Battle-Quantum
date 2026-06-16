@@ -44,7 +44,7 @@
         /* Animações de Flash */
         .flash-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; z-index: 9999; }
         
-        /* Trovão: pisca forte e mais vezes */
+        /* Trovão: pisca forte e mais vezes (4 vezes) */
         @keyframes flash-thunder { 0%, 100% { opacity: 0; } 20%, 60% { background: yellow; opacity: 0.7; } 40%, 80% { background: black; opacity: 0.7; } }
         /* Choque: Pisca apenas duas vezes bem rápido */
         @keyframes flash-shock { 0%, 100% { opacity: 0; } 25%, 75% { background: yellow; opacity: 0.6; } 50% { background: black; opacity: 0.4; } }
@@ -52,7 +52,7 @@
         @keyframes flash-purple { 0%, 100% { opacity: 0; } 25% { background: #8a2be2; opacity: 0.6; } 50% { background: black; opacity: 0.6; } 75% { background: #8a2be2; opacity: 0.6; } }
         
         .animar-flash-trovao { animation: flash-thunder 0.12s 4; }
-        .animar-flash-choque { animation: flash-shock 0.15s 2; } /* Pisca apenas 2 vezes */
+        .animar-flash-choque { animation: flash-shock 0.15s 2; }
         .animar-flash-mew { animation: flash-purple 0.1s 4; }
         
         /* Trepidação da Arena */
@@ -143,7 +143,6 @@
             sfxPika.currentTime = 0;
             sfxPika.play();
             
-            // Escolhe a animação certa baseada no botão clicado
             if (tipoAtaque === 'trovao') {
                 flash.classList.add('animar-flash-trovao');
             } else {
@@ -192,3 +191,4 @@
                 arena.classList.remove('tremer-tela');
 
                 if (pikachuHP <= 0) {
+                    log.innerText = "Pikachu desmaiou! Você perdeu!";
