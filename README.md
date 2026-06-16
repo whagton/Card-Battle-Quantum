@@ -19,14 +19,14 @@
         #btn-iniciar { display: none; position: absolute; z-index: 3; padding: 12px 24px; cursor: pointer; background: #ffcc00; border: 3px solid #000; font-weight: bold; border-radius: 10px; color: black; font-size: 14px; white-space: nowrap; animation: popIn 0.3s ease-out; }
         @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* Tela de Seleção de Pokémon */
-        #select-screen { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 9000; width: 100%; max-width: 500px; }
+        /* Tela de Seleção de Pokémon Expandida */
+        #select-screen { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 9000; width: 95%; max-width: 700px; }
         .select-title { font-size: 22px; font-weight: bold; color: #ffcc00; margin-bottom: 20px; text-shadow: 0 2px 4px #000; }
-        .pokemon-options { display: flex; justify-content: space-around; gap: 15px; margin-bottom: 25px; }
-        .poke-card { background: rgba(255,255,255,0.1); border: 2px solid #444; border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.2s; width: 110px; display: flex; flex-direction: column; align-items: center; }
+        .pokemon-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; justify-items: center; }
+        .poke-card { background: rgba(255,255,255,0.1); border: 2px solid #444; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; width: 110px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box; }
         .poke-card:hover { transform: scale(1.08); border-color: #ffcc00; background: rgba(255, 204, 0, 0.15); }
-        .poke-card img { width: 70px; height: 70px; object-fit: contain; }
-        .poke-card span { font-weight: bold; font-size: 13px; margin-top: 8px; }
+        .poke-card img { width: 65px; height: 65px; object-fit: contain; }
+        .poke-card span { font-weight: bold; font-size: 12px; margin-top: 8px; text-align: center; }
 
         /* Placar de Vitórias */
         .scoreboard { background: rgba(0,0,0,0.5); padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; border: 1px solid #333; display: inline-block; margin-top: 10px; }
@@ -35,8 +35,8 @@
         #game-ui { display: none; width: 100%; height: 100%; position: relative; }
         .battle-arena { display: flex; flex-direction: column; justify-content: space-between; align-items: center; height: 100%; max-width: 600px; margin: 0 auto; padding: 30px 20px; box-sizing: border-box; }
         
-        .mewtwo-container { display: flex; flex-direction: column; align-items: center; align-self: flex-end; text-align: center; transition: 0.3s; }
-        .pikachu-container { display: flex; flex-direction: column; align-items: center; align-self: flex-start; text-align: center; transition: 0.3s; }
+        .enemy-container { display: flex; flex-direction: column; align-items: center; align-self: flex-end; text-align: center; transition: 0.3s; }
+        .player-container { display: flex; flex-direction: column; align-items: center; align-self: flex-start; text-align: center; transition: 0.3s; }
         
         .slide-in-right { animation: slideRight 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
         .slide-in-left { animation: slideLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
@@ -44,16 +44,13 @@
         @keyframes slideRight { from { transform: translateX(300px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideLeft { from { transform: translateX(-300px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        .pokemon { width: 150px; height: 150px; object-fit: contain; transition: filter 0.1s, opacity 0.5s; }
+        .pokemon { width: 140px; height: 140px; object-fit: contain; transition: filter 0.1s, opacity 0.5s; }
         
         /* HUD estilizada com Barra de Vida (Lifebar) */
         .hud { width: 190px; background: rgba(0, 0, 0, 0.7); padding: 8px 12px; border-radius: 10px; border: 2px solid #444; margin-bottom: 5px; text-align: left; }
         .hp-bar-container { width: 100%; background: #333; border-radius: 6px; border: 1px solid #000; overflow: hidden; margin-top: 5px; height: 12px; }
         .hp-bar-fill { width: 100%; height: 100%; background: #4cd137; transition: width 0.4s ease-out, background-color 0.4s; }
         .hp-text { font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; }
-        
-        .special-container { width: 100%; height: 6px; background: #222; border-radius: 3px; margin-top: 4px; overflow: hidden; border: 1px solid #111; }
-        .special-fill { width: 0%; height: 100%; background: #00a8ff; transition: width 0.4s ease-out; }
 
         /* Animações de Movimento */
         .player-pulo { animation: playerAtk 0.4s ease-in-out; }
@@ -65,27 +62,26 @@
         .spark { position: absolute; width: 6px; height: 6px; background: #fffb00; box-shadow: 0 0 10px #ffea00; border-radius: 50%; pointer-events: none; z-index: 999; animation: sparkFade 0.5s ease-out forwards; }
         @keyframes sparkFade { from { transform: translate(0, 0) scale(1); opacity: 1; } to { transform: translate(var(--mx), var(--my)) scale(0); opacity: 0; } }
 
-        /* Painel de Ataques no rodapé */
+        /* Painel de Ataques com 4 Habilidades */
         .controls-container { width: 100%; display: flex; justify-content: center; padding-top: 10px; position: relative; }
         .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 450px; }
-        .move-btn { padding: 12px; cursor: pointer; background: #222; color: white; border: 2px solid #ffcc00; font-weight: bold; border-radius: 8px; transition: 0.2s; font-size: 13px; text-transform: uppercase; }
+        .move-btn { padding: 12px; cursor: pointer; background: #222; color: white; border: 2px solid #ffcc00; font-weight: bold; border-radius: 8px; transition: 0.2s; font-size: 11px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .move-btn:hover:not(:disabled) { background: #ffcc00; color: black; }
         .move-btn:disabled { background: #444; border-color: #666; cursor: not-allowed; opacity: 0.5; }
         
-        .heal-btn { border-color: #4cd137; }
-        .heal-btn:hover:not(:disabled) { background: #4cd137; color: white; }
-        .ult-btn { border-color: #00a8ff; color: #00a8ff; }
-        .ult-btn:hover:not(:disabled) { background: #00a8ff; color: white; }
+        /* Estilo da habilidade de cura */
+        .heal-skill { border-color: #4cd137; color: #4cd137; }
+        .heal-skill:hover:not(:disabled) { background: #4cd137; color: white; }
 
         #btn-restart { display: none; position: absolute; padding: 15px 30px; cursor: pointer; background: #ffcc00; border: 3px solid #000; font-weight: bold; border-radius: 10px; color: black; font-size: 16px; z-index: 10; animation: popIn 0.3s ease-out; }
 
         #battle-log { text-align: center; font-size: 15px; font-weight: bold; margin-top: 5px; min-height: 40px; color: #ffcc00; padding: 0 10px; line-height: 1.4; }
 
-        /* Flashes */
+        /* Flashes Visuais */
         .flash-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; z-index: 9999; }
         .animar-flash-trovao { animation: flash-thunder 0.12s 4; }
         .animar-flash-choque { animation: flash-shock 0.15s 2; }
-        .animar-flash-mew { animation: flash-purple 0.1s 4; }
+        .animar-flash-enemy { animation: flash-purple 0.1s 4; }
         
         @keyframes flash-thunder { 0%, 100% { opacity: 0; } 20%, 60% { background: yellow; opacity: 0.7; } 40%, 80% { background: black; opacity: 0.7; } }
         @keyframes flash-shock { 0%, 100% { opacity: 0; } 25%, 75% { background: #ff4757; opacity: 0.6; } 50% { background: black; opacity: 0.4; } }
@@ -106,7 +102,7 @@
         <button id="btn-iniciar" onclick="irParaSelecao()">INICIAR BATALHA</button>
     </div>
 
-    <!-- Tela de Seleção de Iniciais -->
+    <!-- Tela de Seleção de Iniciais (Expandida para 8 opções) -->
     <div id="select-screen">
         <div class="select-title">ESCOLHA SEU POKÉMON</div>
         <div class="pokemon-options">
@@ -122,17 +118,15 @@
                 <img src="https://pokemondb.net">
                 <span>BLASTOISE</span>
             </div>
-        </div>
-        <div class="scoreboard" id="wins-display">Vitórias nesta máquina: 0</div>
-    </div>
-
-    <div class="flash-overlay" id="flash"></div>
-
-    <!-- Interface do Jogo -->
-    <div id="game-ui">
-        <div class="battle-arena" id="arena">
-            <!-- Mewtwo (Inimigo) -->
-            <div class="mewtwo-container" id="mewtwo-box">
-                <div class="hud">
-                    <div class="hp-text"><span>MEWTWO</span> <span id="mewtwo-hp-txt">3000/3000</span></div>
-                    <div class="hp-bar-container">
+            <div class="poke-card" onclick="selecionarPokemon('greninja')">
+                <img src="https://pokemondb.net">
+                <span>GRENINJA</span>
+            </div>
+            <div class="poke-card" onclick="selecionarPokemon('lucario')">
+                <img src="https://pokemondb.net">
+                <span>LUCARIO</span>
+            </div>
+            <div class="poke-card" onclick="selecionarPokemon('gengar')">
+                <img src="https://pokemondb.net">
+                <span>GENGAR</span>
+            </div>
