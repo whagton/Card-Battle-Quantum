@@ -4,23 +4,12 @@
     <meta charset="UTF-8">
     <title>Pokémon Battle Simulator</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; background: #0d0d1a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        
-        /* Estilos da Pokébola */
-        #start-screen { display: flex; flex-direction: column; align-items: center; }
-        .pokeball-container { width: 150px; height: 150px; cursor: pointer; position: relative; }
-        .p-top, .p-bottom { width: 150px; height: 75px; background: red; border: 6px solid #000; position: absolute; transition: 0.8s; }
-        .p-top { top: 0; border-radius: 75px 75px 0 0; z-index: 2; }
-        .p-bottom { bottom: 0; background: white; border-radius: 0 0 75px 75px; border-top: none; }
-        .open-top { transform: translateY(-60px); }
-        .open-bottom { transform: translateY(60px); }
-        #btn-iniciar { display: none; margin-top: 80px; padding: 10px 20px; cursor: pointer; background: #ffcc00; font-weight: bold; border-radius: 10px; border: none; }
-
-        /* Telas */
+        body, html { margin: 0; padding: 0; height: 100%; background: #0d0d1a; color: white; font-family: sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        #start-screen { position: absolute; z-index: 1000; text-align: center; }
         #select-screen, #game-ui { display: none; text-align: center; }
-        .pokemon-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .poke-card { background: #222; padding: 20px; border-radius: 10px; cursor: pointer; border: 2px solid #444; }
-        .poke-card:hover { border-color: #ffcc00; }
+        .pokemon-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .poke-card { border: 2px solid #444; padding: 10px; cursor: pointer; background: #222; }
+        .poke-card img { width: 60px; }
     </style>
 </head>
 <body>
@@ -30,41 +19,50 @@
             <div class="p-top" id="top"></div>
             <div class="p-bottom" id="bottom"></div>
         </div>
-        <button id="btn-iniciar" onclick="irParaSelecao()">INICIAR BATALHA</button>
+        <button id="btn-iniciar" onclick="irParaSelecao()" style="display:none;">INICIAR BATALHA</button>
     </div>
 
     <div id="select-screen">
-        <h2>ESCOLHA SEU POKÉMON</h2>
-        <div class="pokemon-options">
-            <div class="poke-card" onclick="iniciarBatalha('Pikachu')">PIKACHU</div>
-            <div class="poke-card" onclick="iniciarBatalha('Charizard')">CHARIZARD</div>
-            <div class="poke-card" onclick="iniciarBatalha('Greninja')">GRENINJA</div>
-        </div>
+        <div class="select-title">ESCOLHA SEU POKÉMON</div>
+        <div class="pokemon-options" id="options-container"></div>
     </div>
 
     <div id="game-ui">
-        <h1 id="status-batalha">Batalha Iniciada!</h1>
-        <button onclick="location.reload()">REINICIAR JOGO</button>
+        <h1>BATALHA EM CURSO</h1>
+        <div id="battle-log">O jogo começou!</div>
+        <button onclick="location.reload()">SAIR</button>
     </div>
 
     <script>
+        const pokes = {
+            'PIKACHU': 25, 'CHARIZARD': 6, 'GRENINJA': 658, 'LUCARIO': 448, 
+            'GENGAR': 94, 'BLASTOISE': 9, 'MEWTWO': 150, 'EEVEE': 133
+        };
+
         function abrirPokebola() {
             document.getElementById('top').classList.add('open-top');
             document.getElementById('bottom').classList.add('open-bottom');
-            setTimeout(() => {
-                document.getElementById('btn-iniciar').style.display = 'block';
-            }, 500);
+            document.getElementById('btn-iniciar').style.display = 'block';
         }
 
         function irParaSelecao() {
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('select-screen').style.display = 'block';
+            
+            const container = document.getElementById('options-container');
+            for(let name in pokes) {
+                container.innerHTML += `
+                    <div class="poke-card" onclick="iniciarBatalha('${name}')">
+                        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokes[name]}.png">
+                        <span>${name}</span>
+                    </div>`;
+            }
         }
 
         function iniciarBatalha(nome) {
             document.getElementById('select-screen').style.display = 'none';
             document.getElementById('game-ui').style.display = 'block';
-            document.getElementById('status-batalha').innerText = "Você escolheu " + nome + "! A batalha começou!";
+            document.getElementById('battle-log').innerText = "Você escolheu " + nome + "! A luta vai começar.";
         }
     </script>
 </body>
