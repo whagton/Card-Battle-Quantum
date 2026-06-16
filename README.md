@@ -10,20 +10,8 @@
     <!-- O botão fora da Pokébola, mas centralizado pelo CSS -->
     <button id="btn-iniciar" style="display:none;" onclick="irParaSelecao()">Iniciar Aventura</button>
 </div>
-#btn-iniciar {
-    display: none;
-    margin: -85px auto 0 auto; /* Valor negativo sobe o botão para cima da bola */
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 20px;
-    border: 2px solid black;
-    font-weight: bold;
-    background-color: white;
-    position: relative;
-    z-index: 10; /* Garante que fique por cima */
-}
 
-        
+
 
         /* UI de Batalha */
         .hp-container { width: 200px; height: 20px; background: #ddd; border: 2px solid black; margin: 5px auto; }
