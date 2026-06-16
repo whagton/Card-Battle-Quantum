@@ -9,22 +9,29 @@
         /* Centralização total da Pokébola e Botão */
         #start-screen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 10000; }
         .pokeball-container { position: relative; width: 150px; height: 150px; cursor: pointer; }
-        .p-top, .p-bottom { width: 150px; height: 75px; background: red; border: 6px solid #000; position: absolute; transition: 0.8s; }
+        .p-top, .p-bottom { width: 150px; height: 75px; background: red; border: 6px solid #000; position: absolute; transition: 0.8s; box-sizing: border-box; }
         .p-top { top: 0; border-radius: 75px 75px 0 0; z-index: 2; }
-        .p-bottom { bottom: 0; background: white; border-radius: 0 0 75px 75px; z-index: 1; }
-        .open-top { transform: translateY(-80px); }
-        .open-bottom { transform: translateY(80px); }
-        #btn-iniciar { display: none; margin-top: 20px; padding: 15px 30px; cursor: pointer; background: #ffcc00; border: none; font-weight: bold; border-radius: 10px; }
+        .p-bottom { bottom: 0; background: white; border-radius: 0 0 75px 75px; z-index: 1; border-top: none; }
+        .open-top { transform: translateY(-40px); }
+        .open-bottom { transform: translateY(40px); }
+        #btn-iniciar { display: none; margin-top: 50px; padding: 15px 30px; cursor: pointer; background: #ffcc00; border: none; font-weight: bold; border-radius: 10px; color: black; }
 
-        /* Arena */
+        /* Arena Centralizada */
         #game-ui { display: none; width: 100%; height: 100%; position: relative; }
-        .mewtwo-container { position: absolute; top: 15%; right: 20%; text-align: center; }
-        .pikachu-container { position: absolute; bottom: 15%; left: 20%; text-align: center; }
-        .pokemon { width: 150px; }
         
-        /* Ataques fixos acima do Pikachu */
-        .controls { position: absolute; bottom: 35%; left: 20%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .move-btn { padding: 10px 20px; cursor: pointer; background: #444; color: white; border: 2px solid #fff; }
+        .battle-arena { display: flex; flex-direction: column; justify-content: space-between; align-items: center; height: 100%; max-width: 600px; margin: 0 auto; padding: 40px 20px; box-sizing: border-box; }
+        
+        /* Containers dos Pokémons */
+        .mewtwo-container { display: flex; flex-direction: column; align-items: center; align-self: flex-end; text-align: center; }
+        .pikachu-container { display: flex; flex-direction: column; align-items: center; align-self: flex-start; text-align: center; }
+        .pokemon { width: 150px; height: 150px; object-fit: contain; }
+        .hp-bar { font-weight: bold; margin-bottom: 5px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; }
+        
+        /* Painel de Ataques no rodapé */
+        .controls-container { width: 100%; display: flex; justify-content: center; padding-top: 20px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; }
+        .move-btn { padding: 15px; cursor: pointer; background: #222; color: white; border: 2px solid #ffcc00; font-weight: bold; border-radius: 8px; transition: 0.2s; }
+        .move-btn:hover { background: #ffcc00; color: black; }
 
         /* Flash Amarelo e Preto */
         .flash-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; z-index: 9999; }
@@ -49,18 +56,26 @@
     <div class="flash-overlay" id="flash"></div>
 
     <div id="game-ui">
-        <div class="mewtwo-container">
-            <div>HP: 3000</div>
-            <img src="https://img.pokemondb.net/sprites/black-white/anim/normal/mewtwo.gif" class="pokemon">
-        </div>
-        
-        <div class="pikachu-container">
-            <div class="controls">
-                <button class="move-btn" onclick="executarAtaque()">TROVÃO</button>
-                <button class="move-btn" onclick="executarAtaque()">CHOQUE</button>
+        <div class="battle-arena">
+            <!-- Mewtwo no topo direito da arena -->
+            <div class="mewtwo-container">
+                <div class="hp-bar">HP: 3000</div>
+                <img src="https://img.pokemondb.net/sprites/black-white/anim/normal/mewtwo.gif" class="pokemon">
             </div>
-            <div>HP: 3000</div>
-            <img src="https://img.pokemondb.net/sprites/black-white/anim/back-normal/pikachu.gif" class="pokemon">
+            
+            <!-- Pikachu embaixo esquerdo da arena -->
+            <div class="pikachu-container">
+                <img src="https://img.pokemondb.net/sprites/black-white/anim/back-normal/pikachu.gif" class="pokemon">
+                <div class="hp-bar">HP: 3000</div>
+            </div>
+
+            <!-- Painel de comandos fixo embaixo -->
+            <div class="controls-container">
+                <div class="controls">
+                    <button class="move-btn" onclick="executarAtaque()">TROVÃO</button>
+                    <button class="move-btn" onclick="executarAtaque()">CHOQUE</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -78,7 +93,7 @@
             document.getElementById('game-ui').style.display = 'block';
         }
 
-        function executarAtaque() {
+        function ejecutarAtaque() {
             const flash = document.getElementById('flash');
             const game = document.getElementById('game-ui');
             document.getElementById('sfx').play();
