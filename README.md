@@ -138,11 +138,11 @@
         </div>
     </div>
 
-    <!-- Efeitos Sonoros -->
-    <audio id="sfx-pika" src="https://myinstants.com"></audio>
+    <!-- Efeitos Sonoros com Links Livres de Bloqueio -->
+    <audio id="sfx-pika" src="https://pokemonshowdown.com"></audio>
     <audio id="sfx-mewtwo" src="https://pokemonshowdown.com"></audio>
-    <audio id="sfx-victory" src="https://myinstants.com"></audio>
-    <audio id="sfx-defeat" src="https://myinstants.com"></audio>
+    <audio id="sfx-victory" src="https://archive.org"></audio>
+    <audio id="sfx-defeat" src="https://pokemonshowdown.com"></audio>
 
     <script>
         const MAX_HP = 3000;
